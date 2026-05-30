@@ -15,7 +15,7 @@ class PedidoFormacao extends Model
     protected $fillable = ['id_pedido', 'data_formacao', 'tema_formacao'];
 
     protected $casts = [
-        'data_formacao' => 'date',
+        'data_formacao' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
