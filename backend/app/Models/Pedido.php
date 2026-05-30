@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\EstadoPedidoEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -127,18 +126,32 @@ class Pedido extends Model
         return $this->hasOne(PedidoCompSaidaAntecipada::class, 'id_pedido', 'id_pedido');
     }
 
-    public function scopeDoUtilizador($query, int $utilizadorId)
+    public static function mapeamentoEspecializacao(): array
     {
-        return $query->where('id_utilizador', $utilizadorId);
+        return [
+            'Horas Extras'                    => 'horasExtras',
+            'Justificação de Faltas'          => 'justificacaoFaltas',
+            'Marcação de Férias'              => 'marcacaoFerias',
+            'Alteração de Férias'             => 'alteracaoFerias',
+            'Troca de Horário'                => 'trocaHorario',
+            'Troca de Folga com Instituição'  => 'trocaFolgaInstituicao',
+            'Interrupção de Atividade'        => 'interrupcaoAtividade',
+            'Folga de Aniversário'            => 'folgaAniversario',
+            'Assiduidade'                     => 'assiduidade',
+            'Licença de Nojo'                 => 'licencaNojo',
+            'Formação'                        => 'formacao',
+            'Motivos Académicos'              => 'motivosAcademicos',
+            'Compensação de Entrada Tardia'   => 'compEntradaTardia',
+            'Compensação de Saída Antecipada' => 'compSaidaAntecipada',
+        ];
     }
 
-    public function scopePorEstado($query, EstadoPedidoEnum $estado)
+    public function relacaoEspecializacao(): ?string
     {
-        return $query->whereHas('estadoPedido', fn($q) => $q->where('nome', $estado->value));
-    }
+        if (!$this->relationLoaded('tipoPedido')) {
+            return null;
+        }
 
-    public function scopePorTipo($query, int $tipoPedidoId)
-    {
-        return $query->where('id_tipo_pedido', $tipoPedidoId);
+        return static::mapeamentoEspecializacao()[$this->tipoPedido->nome] ?? null;
     }
 }

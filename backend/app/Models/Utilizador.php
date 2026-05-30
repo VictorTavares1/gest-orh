@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,9 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class Utilizador extends Model implements AuthenticatableContract
+class Utilizador extends Model implements AuthenticatableContract, AuthorizableContract
 {
-    use Authenticatable, HasApiTokens, HasRoles;
+    use Authenticatable, Authorizable, HasApiTokens, HasRoles;
 
     protected $table = 'utilizador';
     protected $primaryKey = 'id_utilizador';
