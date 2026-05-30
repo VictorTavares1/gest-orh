@@ -15,7 +15,7 @@ class PedidoHorasExtras extends Model
     protected $fillable = ['id_pedido', 'data_horas', 'numero_horas', 'motivo'];
 
     protected $casts = [
-        'data_horas'   => 'date',
+        'data_horas'   => 'date:Y-m-d',
         'numero_horas' => 'decimal:2',
     ];
 
