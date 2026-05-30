@@ -76,6 +76,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         });
 
         Route::delete('/anexos/{anexo}', [\App\Http\Controllers\API\V1\AnexoController::class, 'destroy'])->name('anexos.destroy');
+        Route::get('/anexos/{anexo}/download', [\App\Http\Controllers\API\V1\AnexoController::class, 'download'])->name('anexos.download');
         Route::get('/dashboard/resumo', [\App\Http\Controllers\API\V1\DashboardController::class, 'resumo'])->name('dashboard.resumo');
     });
 });
