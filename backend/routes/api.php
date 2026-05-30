@@ -54,6 +54,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
             Route::get('/{pedido}/historico', [\App\Http\Controllers\API\V1\PedidoController::class, 'historico'])->name('historico');
             Route::get('/{pedido}/anexos', [\App\Http\Controllers\API\V1\AnexoController::class, 'index'])->name('anexos.index');
             Route::post('/{pedido}/anexos', [\App\Http\Controllers\API\V1\AnexoController::class, 'store'])->name('anexos.store');
+            Route::post('/{pedido}/submeter', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'submeter'])->name('submeter');
             Route::post('/{pedido}/aprovar', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'aprovar'])->name('aprovar');
             Route::post('/{pedido}/rejeitar', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'rejeitar'])->name('rejeitar');
 
