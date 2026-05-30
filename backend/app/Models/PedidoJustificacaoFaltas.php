@@ -15,7 +15,7 @@ class PedidoJustificacaoFaltas extends Model
     protected $fillable = ['id_pedido', 'data_falta', 'hora_falta', 'motivo'];
 
     protected $casts = [
-        'data_falta' => 'date',
+        'data_falta' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
