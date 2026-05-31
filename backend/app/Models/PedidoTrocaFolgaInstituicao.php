@@ -15,8 +15,8 @@ class PedidoTrocaFolgaInstituicao extends Model
     protected $fillable = ['id_pedido', 'data_original', 'horario_original', 'nova_data', 'motivo'];
 
     protected $casts = [
-        'data_original' => 'date',
-        'nova_data'     => 'date',
+        'data_original' => 'date:Y-m-d',
+        'nova_data'     => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
