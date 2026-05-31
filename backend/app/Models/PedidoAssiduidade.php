@@ -15,7 +15,7 @@ class PedidoAssiduidade extends Model
     protected $fillable = ['id_pedido', 'data_sem_picagem', 'horario'];
 
     protected $casts = [
-        'data_sem_picagem' => 'date',
+        'data_sem_picagem' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
