@@ -53,7 +53,6 @@ class PedidoPolicy
     {
         return $user->hasAnyPermission([
             'aprovacoes.colega',
-            'aprovacoes.diretor_tecnico',
             'aprovacoes.diretora_executiva',
         ]);
     }
@@ -61,5 +60,10 @@ class PedidoPolicy
     public function rejeitar(Utilizador $user, Pedido $pedido): bool
     {
         return $this->aprovar($user, $pedido);
+    }
+
+    public function devolver(Utilizador $user, Pedido $pedido): bool
+    {
+        return $user->can('aprovacoes.diretora_executiva');
     }
 }

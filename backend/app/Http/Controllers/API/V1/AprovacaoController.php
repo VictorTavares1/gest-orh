@@ -41,4 +41,16 @@ class AprovacaoController extends BaseController
 
         return $this->success(new PedidoResource($atualizado), 'Pedido rejeitado.');
     }
+
+    public function devolver(Request $request, Pedido $pedido): JsonResponse
+    {
+        $pedido->load(['estadoPedido', 'utilizador']);
+        $this->authorize('devolver', $pedido);
+
+        $comentario = $request->input('comentario');
+
+        $atualizado = $this->workflowService->devolver($request->user(), $pedido, $comentario);
+
+        return $this->success(new PedidoResource($atualizado), 'Pedido devolvido ao colaborador para revisão.');
+    }
 }

@@ -57,6 +57,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
             Route::post('/{pedido}/submeter', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'submeter'])->name('submeter');
             Route::post('/{pedido}/aprovar', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'aprovar'])->name('aprovar');
             Route::post('/{pedido}/rejeitar', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'rejeitar'])->name('rejeitar');
+            Route::post('/{pedido}/devolver', [\App\Http\Controllers\API\V1\AprovacaoController::class, 'devolver'])->name('devolver');
 
             // Criação por tipo
             Route::post('/horas-extras', [\App\Http\Controllers\API\V1\Pedidos\HorasExtrasController::class, 'store'])->name('horas-extras.store');

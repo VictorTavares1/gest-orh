@@ -39,21 +39,24 @@ enum TipoPedidoEnum: string
         };
     }
 
+    public static function fromLabel(string $label): self
+    {
+        foreach (self::cases() as $case) {
+            if ($case->label() === $label) {
+                return $case;
+            }
+        }
+        throw new \ValueError("'{$label}' não é um label válido de TipoPedidoEnum.");
+    }
+
     public function papelDeAprovacao(): array
     {
         return match($this) {
             self::TROCA_HORARIO => [
                 PapelAprovadorEnum::COLEGA,
-                PapelAprovadorEnum::DIRETOR_TECNICO,
-            ],
-            self::MARCACAO_FERIAS, self::ALTERACAO_FERIAS,
-            self::LICENCA_NOJO, self::FORMACAO, self::MOTIVOS_ACADEMICOS,
-            self::TROCA_FOLGA_INSTITUICAO, self::INTERRUPCAO_ATIVIDADE,
-            self::FOLGA_ANIVERSARIO => [
-                PapelAprovadorEnum::DIRETOR_TECNICO,
                 PapelAprovadorEnum::DIRETORA_EXECUTIVA,
             ],
-            default => [PapelAprovadorEnum::DIRETOR_TECNICO],
+            default => [PapelAprovadorEnum::DIRETORA_EXECUTIVA],
         };
     }
 
