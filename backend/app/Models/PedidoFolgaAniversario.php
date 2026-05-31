@@ -15,8 +15,8 @@ class PedidoFolgaAniversario extends Model
     protected $fillable = ['id_pedido', 'data_folga', 'horario', 'data_aniversario'];
 
     protected $casts = [
-        'data_folga'      => 'date',
-        'data_aniversario' => 'date',
+        'data_folga'       => 'date:Y-m-d',
+        'data_aniversario' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
