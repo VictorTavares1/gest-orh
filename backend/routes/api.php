@@ -38,9 +38,12 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         // Administração
         Route::middleware('role:diretora_executiva')->group(function () {
-            Route::apiResource('/organizacoes', \App\Http\Controllers\API\V1\OrganizacaoController::class);
-            Route::apiResource('/setores', \App\Http\Controllers\API\V1\SetorController::class);
-            Route::apiResource('/utilizadores', \App\Http\Controllers\API\V1\UtilizadorController::class);
+            Route::apiResource('/organizacoes', \App\Http\Controllers\API\V1\OrganizacaoController::class)
+                ->parameters(['organizacoes' => 'organizacao']);
+            Route::apiResource('/setores', \App\Http\Controllers\API\V1\SetorController::class)
+                ->parameters(['setores' => 'setor']);
+            Route::apiResource('/utilizadores', \App\Http\Controllers\API\V1\UtilizadorController::class)
+                ->parameters(['utilizadores' => 'utilizador']);
             Route::patch('/utilizadores/{utilizador}/ativar', [\App\Http\Controllers\API\V1\UtilizadorController::class, 'ativar'])->name('utilizadores.ativar');
             Route::patch('/utilizadores/{utilizador}/desativar', [\App\Http\Controllers\API\V1\UtilizadorController::class, 'desativar'])->name('utilizadores.desativar');
             Route::apiResource('/periodos', \App\Http\Controllers\API\V1\PeriodoController::class)->except(['index']);

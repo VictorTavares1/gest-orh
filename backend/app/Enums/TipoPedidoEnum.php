@@ -60,6 +60,11 @@ enum TipoPedidoEnum: string
         };
     }
 
+    public function slug(): string
+    {
+        return str_replace('_', '-', $this->value);
+    }
+
     public function requerColega(): bool
     {
         return in_array(PapelAprovadorEnum::COLEGA, $this->papelDeAprovacao());

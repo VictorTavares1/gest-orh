@@ -14,8 +14,8 @@ class Periodo extends Model
     protected $fillable = ['data_inicio', 'data_fim'];
 
     protected $casts = [
-        'data_inicio' => 'date',
-        'data_fim'    => 'date',
+        'data_inicio' => 'date:Y-m-d',
+        'data_fim'    => 'date:Y-m-d',
     ];
 
     public function marcacoesFerias(): HasMany
