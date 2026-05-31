@@ -15,7 +15,7 @@ class PedidoMarcacaoFerias extends Model
     protected $fillable = ['id_pedido', 'id_periodo', 'data_inicio', 'numero_dias'];
 
     protected $casts = [
-        'data_inicio'  => 'date',
+        'data_inicio'  => 'date:Y-m-d',
         'numero_dias'  => 'integer',
     ];
 
