@@ -11,6 +11,7 @@ use App\Models\EstadoPedido;
 use App\Models\HistoricoPedido;
 use App\Models\Pedido;
 use App\Models\Utilizador;
+use Illuminate\Support\Facades\DB;
 
 class WorkflowService
 {
@@ -25,16 +26,18 @@ class WorkflowService
         $pedido->loadMissing('tipoPedido');
         $tipo = TipoPedidoEnum::fromLabel($pedido->tipoPedido->nome);
 
-        // RASCUNHO → PENDENTE
-        $this->transicionar($user, $pedido, EstadoPedidoEnum::PENDENTE);
-        $pedido->refresh()->load(['estadoPedido', 'tipoPedido', 'utilizador']);
+        return DB::transaction(function () use ($user, $pedido, $tipo) {
+            // RASCUNHO → PENDENTE
+            $this->transicionar($user, $pedido, EstadoPedidoEnum::PENDENTE);
+            $pedido->refresh()->load(['estadoPedido', 'tipoPedido', 'utilizador']);
 
-        // PENDENTE → fila de aprovação adequada
-        $proximo = $tipo->requerColega()
-            ? EstadoPedidoEnum::EM_APROVACAO_COLEGA
-            : EstadoPedidoEnum::EM_APROVACAO_EXECUTIVA;
+            // PENDENTE → fila de aprovação adequada
+            $proximo = $tipo->requerColega()
+                ? EstadoPedidoEnum::EM_APROVACAO_COLEGA
+                : EstadoPedidoEnum::EM_APROVACAO_EXECUTIVA;
 
-        return $this->transicionar($user, $pedido, $proximo);
+            return $this->transicionar($user, $pedido, $proximo);
+        });
     }
 
     public function aprovar(Utilizador $user, Pedido $pedido): Pedido
@@ -46,6 +49,14 @@ class WorkflowService
         }
 
         $papel = $this->determinaPapel($user);
+
+        if ($papel === PapelAprovadorEnum::COLEGA) {
+            $pedido->loadMissing('trocaHorario');
+            if (!$pedido->trocaHorario || $pedido->trocaHorario->id_colega !== $user->id_utilizador) {
+                throw new WorkflowException('Só o colega nomeado no pedido pode aprovar esta Troca de Horário.');
+            }
+        }
+
         $proximoEstado = $this->proximoEstadoParaAprovacao($estadoAtual, $papel);
 
         $estadoDestino = EstadoPedido::where('nome', $proximoEstado->value)->firstOrFail();

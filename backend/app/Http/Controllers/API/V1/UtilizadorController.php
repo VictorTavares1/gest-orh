@@ -86,6 +86,10 @@ class UtilizadorController extends BaseController
             return $this->error('Não é possível eliminar um utilizador com pedidos associados.', 422);
         }
 
+        if ($utilizador->aprovacoes()->exists()) {
+            return $this->error('Não é possível eliminar um utilizador com aprovações registadas.', 422);
+        }
+
         $utilizador->delete();
 
         return $this->success(null, 'Utilizador eliminado com sucesso.');
@@ -104,6 +108,7 @@ class UtilizadorController extends BaseController
     public function desativar(Utilizador $utilizador): JsonResponse
     {
         $utilizador->update(['ativo' => false]);
+        $utilizador->tokens()->delete();
 
         return $this->success(
             new UtilizadorResource($utilizador->load($this->eagerLoad)),

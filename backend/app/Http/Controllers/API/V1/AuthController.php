@@ -88,7 +88,7 @@ class AuthController extends BaseController
      */
     public function me(Request $request): JsonResponse
     {
-        $utilizador = $request->user()->load(['tipoUtilizador', 'setor.organizacao']);
+        $utilizador = $request->user()->load(['tipoUtilizador', 'setor.organizacao', 'roles', 'permissions']);
 
         return $this->success(new UtilizadorResource($utilizador));
     }

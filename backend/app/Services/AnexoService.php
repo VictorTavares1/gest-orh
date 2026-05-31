@@ -12,7 +12,8 @@ class AnexoService
 {
     public function upload(Pedido $pedido, UploadedFile $ficheiro): Anexo
     {
-        $nome     = time() . '_' . $ficheiro->getClientOriginalName();
+        $nomeOriginal = preg_replace('/[^a-zA-Z0-9._-]/', '_', $ficheiro->getClientOriginalName());
+        $nome         = time() . '_' . $nomeOriginal;
         $caminho  = $ficheiro->storeAs("pedidos/{$pedido->id_pedido}", $nome, 'public');
 
         return Anexo::create([

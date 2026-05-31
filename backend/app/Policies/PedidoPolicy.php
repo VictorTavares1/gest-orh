@@ -51,7 +51,7 @@ class PedidoPolicy
 
     public function aprovar(Utilizador $user, Pedido $pedido): bool
     {
-        return $user->hasAnyPermission([
+        return $user->ativo && $user->hasAnyPermission([
             'aprovacoes.colega',
             'aprovacoes.diretora_executiva',
         ]);
@@ -64,6 +64,6 @@ class PedidoPolicy
 
     public function devolver(Utilizador $user, Pedido $pedido): bool
     {
-        return $user->can('aprovacoes.diretora_executiva');
+        return $user->ativo && $user->can('aprovacoes.diretora_executiva');
     }
 }
