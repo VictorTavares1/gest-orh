@@ -25,7 +25,7 @@ class PedidoTrocaHorario extends Model
     ];
 
     protected $casts = [
-        'data_troca' => 'date',
+        'data_troca' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
