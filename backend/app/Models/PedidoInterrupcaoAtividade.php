@@ -21,8 +21,8 @@ class PedidoInterrupcaoAtividade extends Model
     ];
 
     protected $casts = [
-        'data_folga'      => 'date',
-        'data_trabalhada' => 'date',
+        'data_folga'      => 'date:Y-m-d',
+        'data_trabalhada' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
