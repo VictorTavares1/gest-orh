@@ -15,7 +15,7 @@ class PedidoMotivosAcademicos extends Model
     protected $fillable = ['id_pedido', 'data_ausencia', 'motivo_academico'];
 
     protected $casts = [
-        'data_ausencia' => 'date',
+        'data_ausencia' => 'date:Y-m-d',
     ];
 
     public function pedido(): BelongsTo
