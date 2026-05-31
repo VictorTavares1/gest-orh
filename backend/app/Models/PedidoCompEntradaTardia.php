@@ -22,8 +22,8 @@ class PedidoCompEntradaTardia extends Model
     ];
 
     protected $casts = [
-        'data_entrada_tardia' => 'date',
-        'data_horas_extras'   => 'date',
+        'data_entrada_tardia' => 'date:Y-m-d',
+        'data_horas_extras'   => 'date:Y-m-d',
         'num_horas_extras'    => 'decimal:2',
     ];
 
