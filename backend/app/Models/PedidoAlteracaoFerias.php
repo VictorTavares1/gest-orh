@@ -15,8 +15,8 @@ class PedidoAlteracaoFerias extends Model
     protected $fillable = ['id_pedido', 'id_periodo_atual', 'novo_inicio', 'novo_fim', 'numero_dias'];
 
     protected $casts = [
-        'novo_inicio' => 'date',
-        'novo_fim'    => 'date',
+        'novo_inicio' => 'date:Y-m-d',
+        'novo_fim'    => 'date:Y-m-d',
         'numero_dias' => 'integer',
     ];
 
