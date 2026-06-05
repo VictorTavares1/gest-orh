@@ -38,4 +38,6 @@ export interface PedidoFiltros {
   id_tipo_pedido?: number;
   per_page?: number;
   page?: number;
+  mes?: number;
+  ano?: number;
 }

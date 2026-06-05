@@ -1,0 +1,146 @@
+<div class="relatorio-page">
+
+  <!-- ─── Header (oculto na impressão) ──────────────────────────────────────── -->
+  <div class="page-header no-print">
+    <div>
+      <h1>Relatório Mensal</h1>
+      <p>Métricas de atividade do sistema por mês.</p>
+    </div>
+    <div class="header-acoes">
+      <mat-form-field appearance="outline" floatLabel="always" class="select-mes">
+        <mat-label>Mês</mat-label>
+        <mat-select [(ngModel)]="mesSelecionado" (ngModelChange)="carregar()">
+          @for (m of meses; track $index) {
+            <mat-option [value]="$index + 1">{{ m }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" floatLabel="always" class="select-ano">
+        <mat-label>Ano</mat-label>
+        <mat-select [(ngModel)]="anoSelecionado" (ngModelChange)="carregar()">
+          @for (a of anos; track a) {
+            <mat-option [value]="a">{{ a }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" (click)="exportarPDF()" [disabled]="loading()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Exportar PDF
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" class="no-print" />
+  }
+
+  @if (!loading() && totalPedidos() === 0 && dataGeracao()) {
+    <div class="empty-state no-print">
+      <mat-icon>bar_chart</mat-icon>
+      <h3>Sem dados para {{ tituloMes }}</h3>
+      <p>Não existem pedidos registados neste período.</p>
+    </div>
+  }
+
+  @if (!loading() && totalPedidos() > 0) {
+
+    <!-- ─── Cabeçalho do relatório (visível na impressão) ─────────────────── -->
+    <div class="relatorio-header print-only">
+      <div class="logo-area">
+        <span class="logo-icon">📋</span>
+        <div>
+          <h2>Gestão RH</h2>
+          <span>Relatório Mensal</span>
+        </div>
+      </div>
+      <div class="meta-info">
+        <strong>Período:</strong> {{ tituloMes }}<br>
+        <strong>Gerado em:</strong> {{ dataGeracao() | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+    </div>
+
+    <!-- ─── Resumo geral ──────────────────────────────────────────────────── -->
+    <div class="secao-titulo">
+      <h2>Resumo Geral — {{ tituloMes }}</h2>
+      <span class="geracao-info no-print">
+        Gerado em {{ dataGeracao() | date:'dd/MM/yyyy HH:mm' }}
+      </span>
+    </div>
+
+    <div class="kpi-grid">
+      <mat-card class="kpi-card kpi-total">
+        <mat-card-content>
+          <div class="kpi-icon"><mat-icon>assignment</mat-icon></div>
+          <div class="kpi-valor">{{ totalPedidos() }}</div>
+          <div class="kpi-label">Total de pedidos</div>
+        </mat-card-content>
+      </mat-card>
+
+      @for (e of porEstado(); track e.nome) {
+        <mat-card class="kpi-card">
+          <mat-card-content>
+            <div class="kpi-dot" [style.background]="e.cor"></div>
+            <div class="kpi-valor">{{ e.total }}</div>
+            <div class="kpi-label">{{ e.label }}</div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <!-- ─── Por tipo de pedido ────────────────────────────────────────────── -->
+    <mat-card class="secao-card">
+      <mat-card-content>
+        <h3 class="secao-card-titulo">
+          <mat-icon>category</mat-icon>
+          Pedidos por Tipo
+        </h3>
+        <mat-divider />
+        <div class="lista-metricas">
+          @for (t of porTipo(); track t.nome; let i = $index) {
+            <div class="metrica-row">
+              <span class="metrica-pos">{{ i + 1 }}.</span>
+              <span class="metrica-nome">{{ t.nome }}</span>
+              <div class="barra-wrap">
+                <div class="barra" [style.width.%]="(t.total / maxTipo()) * 100"></div>
+              </div>
+              <span class="metrica-valor">{{ t.total }}</span>
+              <span class="metrica-pct">{{ t.percentagem }}%</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ─── Por funcionário ───────────────────────────────────────────────── -->
+    <mat-card class="secao-card">
+      <mat-card-content>
+        <h3 class="secao-card-titulo">
+          <mat-icon>people</mat-icon>
+          Top 10 Funcionários com mais pedidos
+        </h3>
+        <mat-divider />
+        <div class="lista-metricas">
+          @for (f of porFuncionario(); track f.nome; let i = $index) {
+            <div class="metrica-row">
+              <span class="metrica-pos">{{ i + 1 }}.</span>
+              <span class="metrica-nome">{{ f.nome }}</span>
+              <div class="barra-wrap">
+                <div class="barra barra-pessoa" [style.width.%]="(f.total / maxFuncionario()) * 100"></div>
+              </div>
+              <span class="metrica-valor">{{ f.total }}</span>
+              <span class="metrica-pct">{{ f.total === 1 ? '1 pedido' : f.total + ' pedidos' }}</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ─── Rodapé do relatório (só na impressão) ─────────────────────────── -->
+    <div class="relatorio-footer print-only">
+      <mat-divider />
+      <p>Relatório gerado automaticamente pelo sistema Gestão RH · {{ dataGeracao() | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+  }
+
+</div>

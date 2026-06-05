@@ -34,6 +34,11 @@ class PedidoRepository extends BaseRepository implements PedidoRepositoryInterfa
             $query->where('id_tipo_pedido', $filtros['id_tipo_pedido']);
         }
 
+        if (isset($filtros['mes']) && isset($filtros['ano'])) {
+            $query->whereMonth('data_criacao', $filtros['mes'])
+                  ->whereYear('data_criacao', $filtros['ano']);
+        }
+
         return $query->paginate($perPage);
     }
 

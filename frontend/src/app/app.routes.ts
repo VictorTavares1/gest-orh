@@ -58,6 +58,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/admin/utilizadores/admin-utilizadores.component').then((m) => m.AdminUtilizadoresComponent),
           },
+          {
+            path: 'relatorio',
+            loadComponent: () =>
+              import('./features/admin/relatorio/admin-relatorio.component').then((m) => m.AdminRelatorioComponent),
+          },
           { path: '', redirectTo: 'utilizadores', pathMatch: 'full' },
         ],
       },

@@ -19,7 +19,7 @@ class PedidoController extends BaseController
 
         $paginator = $this->pedidoService->listar(
             $request->user(),
-            $request->only(['estado', 'id_tipo_pedido', 'per_page'])
+            $request->only(['estado', 'id_tipo_pedido', 'per_page', 'mes', 'ano'])
         );
 
         return $this->paginated(PedidoResource::collection($paginator));

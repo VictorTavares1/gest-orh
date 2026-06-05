@@ -16,6 +16,8 @@ export class PedidoService {
     if (filtros.id_tipo_pedido) params = params.set('id_tipo_pedido', filtros.id_tipo_pedido);
     if (filtros.per_page) params = params.set('per_page', filtros.per_page);
     if (filtros.page) params = params.set('page', filtros.page);
+    if (filtros.mes) params = params.set('mes', filtros.mes);
+    if (filtros.ano) params = params.set('ano', filtros.ano);
     return this.http.get<PaginatedResponse<Pedido>>(this.base, { params });
   }
 

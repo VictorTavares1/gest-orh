@@ -35,6 +35,11 @@ class PedidoService
             $query['id_tipo_pedido'] = (int) $filtros['id_tipo_pedido'];
         }
 
+        if (!empty($filtros['mes']) && !empty($filtros['ano'])) {
+            $query['mes'] = (int) $filtros['mes'];
+            $query['ano'] = (int) $filtros['ano'];
+        }
+
         $perPage = isset($filtros['per_page']) ? (int) $filtros['per_page'] : 15;
 
         return $this->pedidoRepository->listarComFiltros($query, $perPage);
