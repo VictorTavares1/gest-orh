@@ -23,30 +23,27 @@
 
       <div class="header-actions">
         @if (podeSubmeter()) {
-          <button
-            mat-flat-button
-            color="primary"
-            (click)="submeter()"
-            [disabled]="acaoLoading()"
-          >
-            @if (acaoLoading()) {
-              <mat-spinner diameter="18" />
-            } @else {
-              <mat-icon>send</mat-icon>
-            }
+          <button mat-flat-button color="primary" (click)="submeter()" [disabled]="acaoLoading()">
+            @if (acaoLoading()) { <mat-spinner diameter="18" /> } @else { <mat-icon>send</mat-icon> }
             Submeter
           </button>
         }
 
+        @if (podeAprovar()) {
+          <button mat-flat-button color="primary" (click)="aprovar()" [disabled]="acaoLoading()">
+            <mat-icon>check_circle</mat-icon>Aprovar
+          </button>
+          <button mat-stroked-button color="warn" (click)="rejeitar()" [disabled]="acaoLoading()">
+            <mat-icon>cancel</mat-icon>Rejeitar
+          </button>
+          <button mat-stroked-button (click)="devolver()" [disabled]="acaoLoading()" class="btn-devolver">
+            <mat-icon>undo</mat-icon>Devolver
+          </button>
+        }
+
         @if (podeCancelar()) {
-          <button
-            mat-stroked-button
-            color="warn"
-            (click)="cancelar()"
-            [disabled]="acaoLoading()"
-          >
-            <mat-icon>cancel</mat-icon>
-            Cancelar Pedido
+          <button mat-stroked-button color="warn" (click)="cancelar()" [disabled]="acaoLoading()">
+            <mat-icon>cancel</mat-icon>Cancelar Pedido
           </button>
         }
       </div>

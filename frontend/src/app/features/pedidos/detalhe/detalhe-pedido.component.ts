@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Pedido, HistoricoItem } from '../../../core/models/pedido.model';
+import { AcaoDialogComponent, AcaoDialogData } from '../../aprovacoes/acao-dialog/acao-dialog.component';
 
 const ESTADOS_TERMINAIS = ['APROVADO', 'REJEITADO', 'CANCELADO'];
 const LABEL_MAP: Record<string, string> = {
@@ -80,6 +81,9 @@ export class DetalhePedidoComponent implements OnInit {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+
+  readonly isDiretora = this.auth.hasRole('diretora_executiva');
 
   readonly loading = signal(true);
   readonly acaoLoading = signal(false);
@@ -120,7 +124,9 @@ export class DetalhePedidoComponent implements OnInit {
 
   podeCancelar(): boolean {
     const estado = this.pedido()?.estado?.nome;
-    return !!estado && !ESTADOS_TERMINAIS.includes(estado);
+    if (!estado || ESTADOS_TERMINAIS.includes(estado)) return false;
+    if (this.isDiretora()) return false;
+    return true;
   }
 
   submeter(): void {
@@ -162,6 +168,58 @@ export class DetalhePedidoComponent implements OnInit {
         this.snackBar.open(msg, 'Fechar', { duration: 4000, panelClass: 'snack-error' });
       },
     });
+  }
+
+  podeAprovar(): boolean {
+    return this.isDiretora() && this.pedido()?.estado?.nome === 'EM_APROVACAO_EXECUTIVA';
+  }
+
+  aprovar(): void {
+    const p = this.pedido();
+    if (!p) return;
+    const data: AcaoDialogData = { acao: 'aprovar', tipoPedido: p.tipo?.nome ?? '', funcionario: p.utilizador?.nome ?? '' };
+    this.dialog.open(AcaoDialogComponent, { data, width: '420px' })
+      .afterClosed()
+      .subscribe((confirmado: boolean) => {
+        if (!confirmado) return;
+        this.acaoLoading.set(true);
+        this.pedidoService.aprovar(p.id_pedido).subscribe({
+          next: (res) => { this.pedido.set(res.data); this.acaoLoading.set(false); this.carregarHistorico(p.id_pedido); this.snackBar.open('Pedido aprovado.', 'Fechar', { duration: 3000, panelClass: 'snack-success' }); },
+          error: (err) => { this.acaoLoading.set(false); this.snackBar.open(err?.error?.message ?? 'Erro ao aprovar.', 'Fechar', { duration: 4000, panelClass: 'snack-error' }); },
+        });
+      });
+  }
+
+  rejeitar(): void {
+    const p = this.pedido();
+    if (!p) return;
+    const data: AcaoDialogData = { acao: 'rejeitar', tipoPedido: p.tipo?.nome ?? '', funcionario: p.utilizador?.nome ?? '' };
+    this.dialog.open(AcaoDialogComponent, { data, width: '420px' })
+      .afterClosed()
+      .subscribe((confirmado: boolean) => {
+        if (!confirmado) return;
+        this.acaoLoading.set(true);
+        this.pedidoService.rejeitar(p.id_pedido).subscribe({
+          next: (res) => { this.pedido.set(res.data); this.acaoLoading.set(false); this.carregarHistorico(p.id_pedido); this.snackBar.open('Pedido rejeitado.', 'Fechar', { duration: 3000, panelClass: 'snack-warn' }); },
+          error: (err) => { this.acaoLoading.set(false); this.snackBar.open(err?.error?.message ?? 'Erro ao rejeitar.', 'Fechar', { duration: 4000, panelClass: 'snack-error' }); },
+        });
+      });
+  }
+
+  devolver(): void {
+    const p = this.pedido();
+    if (!p) return;
+    const data: AcaoDialogData = { acao: 'devolver', tipoPedido: p.tipo?.nome ?? '', funcionario: p.utilizador?.nome ?? '', pedirComentario: true };
+    this.dialog.open(AcaoDialogComponent, { data, width: '460px' })
+      .afterClosed()
+      .subscribe((resultado: { confirmado: boolean; comentario?: string } | undefined) => {
+        if (!resultado?.confirmado) return;
+        this.acaoLoading.set(true);
+        this.pedidoService.devolver(p.id_pedido, resultado.comentario).subscribe({
+          next: (res) => { this.pedido.set(res.data); this.acaoLoading.set(false); this.carregarHistorico(p.id_pedido); this.snackBar.open('Pedido devolvido ao funcionário.', 'Fechar', { duration: 3000, panelClass: 'snack-warn' }); },
+          error: (err) => { this.acaoLoading.set(false); this.snackBar.open(err?.error?.message ?? 'Erro ao devolver.', 'Fechar', { duration: 4000, panelClass: 'snack-error' }); },
+        });
+      });
   }
 
   camposEspecializacao(): { label: string; valor: unknown }[] {
