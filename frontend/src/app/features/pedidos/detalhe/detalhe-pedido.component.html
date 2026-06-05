@@ -1,0 +1,158 @@
+<div class="detalhe-page">
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-full">
+      <mat-spinner diameter="48" />
+    </div>
+  }
+
+  @if (!loading() && pedido(); as p) {
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-left">
+        <button mat-icon-button routerLink="/pedidos" matTooltip="Voltar à lista">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <h1>{{ p.tipo?.nome }}</h1>
+          <p>Pedido #{{ p.id_pedido }} &middot; criado em {{ p.data_criacao | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        @if (podeSubmeter()) {
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="submeter()"
+            [disabled]="acaoLoading()"
+          >
+            @if (acaoLoading()) {
+              <mat-spinner diameter="18" />
+            } @else {
+              <mat-icon>send</mat-icon>
+            }
+            Submeter
+          </button>
+        }
+
+        @if (podeCancelar()) {
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="cancelar()"
+            [disabled]="acaoLoading()"
+          >
+            <mat-icon>cancel</mat-icon>
+            Cancelar Pedido
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="content-grid">
+
+      <!-- Coluna principal -->
+      <div class="col-main">
+
+        <!-- Estado atual -->
+        <mat-card class="card-estado">
+          <mat-card-content>
+            <div class="estado-row">
+              <div class="estado-info">
+                <span class="estado-label-text">Estado atual</span>
+                <span class="estado-badge lg" [class]="estadoClass(p.estado?.nome ?? '')">
+                  {{ p.estado?.label }}
+                </span>
+              </div>
+              <mat-icon class="estado-icon" [class]="estadoClass(p.estado?.nome ?? '')">
+                @switch (p.estado?.nome) {
+                  @case ('APROVADO') { check_circle }
+                  @case ('REJEITADO') { cancel }
+                  @case ('CANCELADO') { block }
+                  @case ('RASCUNHO') { edit_note }
+                  @default { hourglass_empty }
+                }
+              </mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Dados específicos do pedido -->
+        @if (camposEspecializacao().length > 0) {
+          <mat-card class="card-info">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>info_outline</mat-icon>
+                Dados do Pedido
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="campos-grid">
+                @for (campo of camposEspecializacao(); track campo.label) {
+                  <div class="campo-item">
+                    <span class="campo-label">{{ campo.label }}</span>
+                    <span class="campo-valor">{{ formatarValor(campo.valor) }}</span>
+                  </div>
+                }
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+
+      </div>
+
+      <!-- Coluna lateral: histórico -->
+      <div class="col-side">
+        <mat-card class="card-historico">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>history</mat-icon>
+              Histórico
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (historico().length === 0) {
+              <div class="empty-historico">
+                <mat-icon>timeline</mat-icon>
+                <span>Sem movimentos registados.</span>
+              </div>
+            } @else {
+              <div class="timeline">
+                @for (item of historico(); track item.id_historico; let last = $last) {
+                  <div class="timeline-item">
+                    <div class="timeline-dot" [class]="estadoClass(item.estado_novo?.nome ?? '')"></div>
+                    @if (!last) { <div class="timeline-line"></div> }
+                    <div class="timeline-content">
+                      <div class="timeline-estados">
+                        @if (item.estado_anterior) {
+                          <span class="estado-badge sm" [class]="estadoClass(item.estado_anterior.nome)">
+                            {{ item.estado_anterior.label }}
+                          </span>
+                          <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                        }
+                        <span class="estado-badge sm" [class]="estadoClass(item.estado_novo?.nome ?? '')">
+                          {{ item.estado_novo?.label }}
+                        </span>
+                      </div>
+                      <span class="timeline-meta">
+                        {{ item.utilizador_acao?.nome ?? 'Sistema' }}
+                        &middot;
+                        {{ item.data_alteracao | date:'dd/MM/yyyy HH:mm' }}
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+
+  }
+
+</div>

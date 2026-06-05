@@ -14,6 +14,14 @@ export interface PedidoUtilizador {
   nome: string;
 }
 
+export interface HistoricoItem {
+  id_historico: number;
+  data_alteracao: string;
+  utilizador_acao: PedidoUtilizador | null;
+  estado_anterior: PedidoEstado | null;
+  estado_novo: PedidoEstado;
+}
+
 export interface Pedido {
   id_pedido: number;
   data_criacao: string;
@@ -21,6 +29,7 @@ export interface Pedido {
   tipo: PedidoTipo;
   utilizador: PedidoUtilizador;
   especializacao: Record<string, unknown> | null;
+  historico?: HistoricoItem[];
 }
 
 export interface PedidoFiltros {

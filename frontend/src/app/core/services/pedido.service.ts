@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Pedido, PedidoFiltros } from '../models/pedido.model';
+import { Pedido, PedidoFiltros, HistoricoItem } from '../models/pedido.model';
 import { ApiResponse, PaginatedResponse } from '../models/api.model';
 
 @Injectable({ providedIn: 'root' })
@@ -29,5 +29,9 @@ export class PedidoService {
 
   submeter(id: number): Observable<ApiResponse<Pedido>> {
     return this.http.post<ApiResponse<Pedido>>(`${this.base}/${id}/submeter`, {});
+  }
+
+  historico(id: number): Observable<ApiResponse<HistoricoItem[]>> {
+    return this.http.get<ApiResponse<HistoricoItem[]>>(`${this.base}/${id}/historico`);
   }
 }
