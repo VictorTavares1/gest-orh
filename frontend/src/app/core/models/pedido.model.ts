@@ -12,6 +12,7 @@ export interface PedidoTipo {
 export interface PedidoUtilizador {
   id: number;
   nome: string;
+  id_utilizador?: number;
 }
 
 export interface HistoricoItem {

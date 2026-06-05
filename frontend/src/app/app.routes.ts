@@ -45,6 +45,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/perfil/perfil.component').then((m) => m.PerfilComponent),
       },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

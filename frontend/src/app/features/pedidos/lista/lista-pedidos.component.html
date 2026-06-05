@@ -3,8 +3,8 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1>Os Meus Pedidos</h1>
-      <p>Consulte e acompanhe todos os seus pedidos.</p>
+      <h1>Pedidos</h1>
+      <p>{{ isDiretor() ? 'Consulte os seus pedidos e os do seu setor.' : 'Consulte e acompanhe todos os seus pedidos.' }}</p>
     </div>
     <button mat-flat-button color="primary" routerLink="/pedidos/novo">
       <mat-icon>add</mat-icon>
@@ -12,123 +12,247 @@
     </button>
   </div>
 
-  <!-- Filtros -->
-  <mat-card class="filtros-card">
-    <mat-card-content>
-      <form [formGroup]="filtros" class="filtros-form">
+  @if (isDiretor()) {
 
-        <mat-form-field appearance="outline" class="filtro-estado">
-          <mat-label>Estado</mat-label>
-          <mat-select formControlName="estado">
-            <mat-option value="">Todos os estados</mat-option>
-            @for (e of estados; track e.value) {
-              <mat-option [value]="e.value">{{ e.label }}</mat-option>
+    <mat-tab-group animationDuration="200ms">
+
+      <!-- ─── Tab: Os Meus Pedidos ───────────────────────────────────────── -->
+      <mat-tab label="Os Meus Pedidos">
+        <div class="tab-content">
+
+          <mat-card class="filtros-card">
+            <mat-card-content>
+              <form [formGroup]="filtrosMeus" class="filtros-form">
+                <mat-form-field appearance="outline" floatLabel="always" class="filtro-pesquisa">
+                  <mat-label>Pesquisa</mat-label>
+                  <mat-icon matIconPrefix>search</mat-icon>
+                  <input matInput formControlName="pesquisa" autocomplete="off" placeholder="Pesquisar por tipo ou estado..." />
+                  @if (filtrosMeus.controls.pesquisa.value) {
+                    <button matIconSuffix mat-icon-button type="button" (click)="filtrosMeus.controls.pesquisa.setValue('')">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline" floatLabel="always" class="filtro-estado">
+                  <mat-label>Estado</mat-label>
+                  <mat-icon matIconPrefix>filter_list</mat-icon>
+                  <mat-select formControlName="estado">
+                    <mat-option value="">Todos</mat-option>
+                    @for (e of estados; track e.value) {
+                      <mat-option [value]="e.value">{{ e.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                @if (filtrosMeus.controls.estado.value || filtrosMeus.controls.pesquisa.value) {
+                  <button mat-stroked-button type="button" (click)="limparMeus()" class="btn-limpar">
+                    <mat-icon>close</mat-icon>Limpar
+                  </button>
+                }
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="tabela-card">
+            @if (loadingMeus()) { <mat-progress-bar mode="indeterminate" /> }
+            <mat-card-content>
+              @if (!loadingMeus() && pedidosMeusFiltrados().length === 0) {
+                <div class="empty-state">
+                  <mat-icon>inbox</mat-icon>
+                  <h3>Sem pedidos</h3>
+                  <p>{{ (filtrosMeus.controls.estado.value || filtrosMeus.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Ainda não criou nenhum pedido.' }}</p>
+                </div>
+              } @else {
+                <table mat-table [dataSource]="pedidosMeusFiltrados()" class="pedidos-table">
+                  <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo de Pedido</th>
+                    <td mat-cell *matCellDef="let p"><div class="tipo-cell"><mat-icon class="tipo-icon">description</mat-icon><span>{{ p.tipo?.nome }}</span></div></td>
+                  </ng-container>
+                  <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let p"><span class="estado-badge" [class]="estadoClass(p.estado?.nome ?? '')">{{ p.estado?.label }}</span></td>
+                  </ng-container>
+                  <ng-container matColumnDef="data_criacao">
+                    <th mat-header-cell *matHeaderCellDef>Data</th>
+                    <td mat-cell *matCellDef="let p" class="data-cell">{{ p.data_criacao | date:'dd/MM/yyyy' }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="acoes">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let p" class="acoes-cell">
+                      <button mat-icon-button [routerLink]="['/pedidos', p.id_pedido]" matTooltip="Ver detalhe" color="primary"><mat-icon>chevron_right</mat-icon></button>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="colunasMeus"></tr>
+                  <tr mat-row *matRowDef="let p; columns: colunasMeus" class="pedido-row" [routerLink]="['/pedidos', p.id_pedido]"></tr>
+                </table>
+                <mat-paginator [length]="totalMeus()" [pageSize]="porPaginaMeus()" [pageSizeOptions]="[10,15,25]" [pageIndex]="paginaMeus()-1" (page)="onPaginaMeus($event)" showFirstLastButtons />
+              }
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+      </mat-tab>
+
+      <!-- ─── Tab: Pedidos do Setor ──────────────────────────────────────── -->
+      <mat-tab label="Pedidos do Setor">
+        <div class="tab-content">
+
+          <mat-card class="filtros-card">
+            <mat-card-content>
+              <form [formGroup]="filtrosSetor" class="filtros-form">
+                <mat-form-field appearance="outline" floatLabel="always" class="filtro-pesquisa">
+                  <mat-label>Pesquisa</mat-label>
+                  <mat-icon matIconPrefix>search</mat-icon>
+                  <input matInput formControlName="pesquisa" autocomplete="off" placeholder="Pesquisar por funcionário ou tipo..." />
+                  @if (filtrosSetor.controls.pesquisa.value) {
+                    <button matIconSuffix mat-icon-button type="button" (click)="filtrosSetor.controls.pesquisa.setValue('')">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline" floatLabel="always" class="filtro-estado">
+                  <mat-label>Estado</mat-label>
+                  <mat-icon matIconPrefix>filter_list</mat-icon>
+                  <mat-select formControlName="estado">
+                    <mat-option value="">Todos</mat-option>
+                    @for (e of estados; track e.value) {
+                      <mat-option [value]="e.value">{{ e.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                @if (filtrosSetor.controls.estado.value || filtrosSetor.controls.pesquisa.value) {
+                  <button mat-stroked-button type="button" (click)="limparSetor()" class="btn-limpar">
+                    <mat-icon>close</mat-icon>Limpar
+                  </button>
+                }
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="tabela-card">
+            @if (loadingSetor()) { <mat-progress-bar mode="indeterminate" /> }
+            <mat-card-content>
+              @if (!loadingSetor() && pedidosSetorFiltrados().length === 0) {
+                <div class="empty-state">
+                  <mat-icon>inbox</mat-icon>
+                  <h3>Sem pedidos</h3>
+                  <p>{{ (filtrosSetor.controls.estado.value || filtrosSetor.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Sem pedidos no setor.' }}</p>
+                </div>
+              } @else {
+                <table mat-table [dataSource]="pedidosSetorFiltrados()" class="pedidos-table">
+                  <ng-container matColumnDef="funcionario">
+                    <th mat-header-cell *matHeaderCellDef>Funcionário</th>
+                    <td mat-cell *matCellDef="let p">
+                      <div class="funcionario-cell">
+                        <div class="avatar-mini">{{ p.utilizador?.nome?.charAt(0) ?? '?' }}</div>
+                        <span>{{ p.utilizador?.nome ?? '—' }}</span>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo de Pedido</th>
+                    <td mat-cell *matCellDef="let p"><div class="tipo-cell"><mat-icon class="tipo-icon">description</mat-icon><span>{{ p.tipo?.nome }}</span></div></td>
+                  </ng-container>
+                  <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let p"><span class="estado-badge" [class]="estadoClass(p.estado?.nome ?? '')">{{ p.estado?.label }}</span></td>
+                  </ng-container>
+                  <ng-container matColumnDef="data_criacao">
+                    <th mat-header-cell *matHeaderCellDef>Data</th>
+                    <td mat-cell *matCellDef="let p" class="data-cell">{{ p.data_criacao | date:'dd/MM/yyyy' }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="acoes">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let p" class="acoes-cell">
+                      <button mat-icon-button [routerLink]="['/pedidos', p.id_pedido]" matTooltip="Ver detalhe" color="primary"><mat-icon>chevron_right</mat-icon></button>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="colunasSetor"></tr>
+                  <tr mat-row *matRowDef="let p; columns: colunasSetor" class="pedido-row" [routerLink]="['/pedidos', p.id_pedido]"></tr>
+                </table>
+              }
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  } @else {
+
+    <!-- ─── Vista funcionário ──────────────────────────────────────────────── -->
+    <mat-card class="filtros-card">
+      <mat-card-content>
+        <form [formGroup]="filtrosMeus" class="filtros-form">
+          <mat-form-field appearance="outline" floatLabel="always" class="filtro-pesquisa">
+            <mat-label>Pesquisa</mat-label>
+            <mat-icon matIconPrefix>search</mat-icon>
+            <input matInput formControlName="pesquisa" autocomplete="off" placeholder="Pesquisar por tipo ou estado..." />
+            @if (filtrosMeus.controls.pesquisa.value) {
+              <button matIconSuffix mat-icon-button type="button" (click)="filtrosMeus.controls.pesquisa.setValue('')">
+                <mat-icon>close</mat-icon>
+              </button>
             }
-          </mat-select>
-          <mat-icon matPrefix>filter_list</mat-icon>
-        </mat-form-field>
-
-        @if (filtros.controls.estado.value) {
-          <button mat-stroked-button (click)="limparFiltros()" class="btn-limpar">
-            <mat-icon>close</mat-icon>
-            Limpar
-          </button>
-        }
-
-      </form>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Tabela -->
-  <mat-card class="tabela-card">
-
-    @if (loading()) {
-      <mat-progress-bar mode="indeterminate" />
-    }
-
-    <mat-card-content>
-
-      @if (!loading() && pedidos().length === 0) {
-        <div class="empty-state">
-          <mat-icon>inbox</mat-icon>
-          <h3>Sem pedidos</h3>
-          <p>{{ filtros.controls.estado.value ? 'Nenhum pedido com este estado.' : 'Ainda não criou nenhum pedido.' }}</p>
-          @if (!filtros.controls.estado.value) {
-            <button mat-flat-button color="primary" routerLink="/pedidos/novo">
-              Criar primeiro pedido
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always" class="filtro-estado">
+            <mat-label>Estado</mat-label>
+            <mat-icon matIconPrefix>filter_list</mat-icon>
+            <mat-select formControlName="estado">
+              <mat-option value="">Todos</mat-option>
+              @for (e of estados; track e.value) {
+                <mat-option [value]="e.value">{{ e.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (filtrosMeus.controls.estado.value || filtrosMeus.controls.pesquisa.value) {
+            <button mat-stroked-button type="button" (click)="limparMeus()" class="btn-limpar">
+              <mat-icon>close</mat-icon>Limpar
             </button>
           }
-        </div>
-      } @else {
+        </form>
+      </mat-card-content>
+    </mat-card>
 
-        <table mat-table [dataSource]="pedidos()" class="pedidos-table">
+    <mat-card class="tabela-card">
+      @if (loadingMeus()) { <mat-progress-bar mode="indeterminate" /> }
+      <mat-card-content>
+        @if (!loadingMeus() && pedidosMeusFiltrados().length === 0) {
+          <div class="empty-state">
+            <mat-icon>inbox</mat-icon>
+            <h3>Sem pedidos</h3>
+            <p>{{ (filtrosMeus.controls.estado.value || filtrosMeus.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Ainda não criou nenhum pedido.' }}</p>
+            @if (!filtrosMeus.controls.estado.value && !filtrosMeus.controls.pesquisa.value) {
+              <button mat-flat-button color="primary" routerLink="/pedidos/novo">Criar primeiro pedido</button>
+            }
+          </div>
+        } @else {
+          <table mat-table [dataSource]="pedidosMeusFiltrados()" class="pedidos-table">
+            <ng-container matColumnDef="tipo">
+              <th mat-header-cell *matHeaderCellDef>Tipo de Pedido</th>
+              <td mat-cell *matCellDef="let p"><div class="tipo-cell"><mat-icon class="tipo-icon">description</mat-icon><span>{{ p.tipo?.nome }}</span></div></td>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let p"><span class="estado-badge" [class]="estadoClass(p.estado?.nome ?? '')">{{ p.estado?.label }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="data_criacao">
+              <th mat-header-cell *matHeaderCellDef>Data</th>
+              <td mat-cell *matCellDef="let p" class="data-cell">{{ p.data_criacao | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let p" class="acoes-cell">
+                <button mat-icon-button [routerLink]="['/pedidos', p.id_pedido]" matTooltip="Ver detalhe" color="primary"><mat-icon>chevron_right</mat-icon></button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="colunasMeus"></tr>
+            <tr mat-row *matRowDef="let p; columns: colunasMeus" class="pedido-row" [routerLink]="['/pedidos', p.id_pedido]"></tr>
+          </table>
+          <mat-paginator [length]="totalMeus()" [pageSize]="porPaginaMeus()" [pageSizeOptions]="[10,15,25]" [pageIndex]="paginaMeus()-1" (page)="onPaginaMeus($event)" showFirstLastButtons />
+        }
+      </mat-card-content>
+    </mat-card>
 
-          <!-- Tipo -->
-          <ng-container matColumnDef="tipo">
-            <th mat-header-cell *matHeaderCellDef>Tipo de Pedido</th>
-            <td mat-cell *matCellDef="let p">
-              <div class="tipo-cell">
-                <mat-icon class="tipo-icon">description</mat-icon>
-                <span>{{ p.tipo?.nome }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Estado -->
-          <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let p">
-              <span class="estado-badge" [class]="estadoClass(p.estado?.nome)">
-                {{ p.estado?.label }}
-              </span>
-            </td>
-          </ng-container>
-
-          <!-- Data -->
-          <ng-container matColumnDef="data_criacao">
-            <th mat-header-cell *matHeaderCellDef>Data</th>
-            <td mat-cell *matCellDef="let p" class="data-cell">
-              {{ p.data_criacao | date:'dd/MM/yyyy' }}
-            </td>
-          </ng-container>
-
-          <!-- Ações -->
-          <ng-container matColumnDef="acoes">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let p" class="acoes-cell">
-              <button
-                mat-icon-button
-                [routerLink]="['/pedidos', p.id_pedido]"
-                matTooltip="Ver detalhe"
-                color="primary"
-              >
-                <mat-icon>chevron_right</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="colunas"></tr>
-          <tr
-            mat-row
-            *matRowDef="let p; columns: colunas"
-            class="pedido-row"
-            [routerLink]="['/pedidos', p.id_pedido]"
-          ></tr>
-
-        </table>
-
-        <mat-paginator
-          [length]="total()"
-          [pageSize]="porPagina()"
-          [pageSizeOptions]="[10, 15, 25]"
-          [pageIndex]="paginaAtual() - 1"
-          (page)="onPagina($event)"
-          showFirstLastButtons
-        />
-
-      }
-
-    </mat-card-content>
-  </mat-card>
+  }
 
 </div>

@@ -38,4 +38,5 @@ export class PedidoService {
   criar(tipo: string, dados: Record<string, unknown>): Observable<ApiResponse<Pedido>> {
     return this.http.post<ApiResponse<Pedido>>(`${this.base}/${tipo}`, dados);
   }
+
 }
