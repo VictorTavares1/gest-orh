@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoginRequest, LoginResponse, MeResponse, Utilizador } from '../models/auth.model';
+import { ApiResponse } from '../models/api.model';
 import { environment } from '../../../environments/environment';
 
 const TOKEN_KEY = 'grh_token';
@@ -45,6 +46,13 @@ export class AuthService {
 
   loadMe(): Observable<MeResponse> {
     return this.http.get<MeResponse>(`${environment.apiUrl}/auth/me`).pipe(
+      tap((res) => this._utilizador.set(res.data)),
+    );
+  }
+
+  atualizarPerfil(dados: { nome?: string; email?: string; password?: string }): Observable<ApiResponse<Utilizador>> {
+    const id = this._utilizador()?.id_utilizador;
+    return this.http.put<ApiResponse<Utilizador>>(`${environment.apiUrl}/utilizadores/${id}`, dados).pipe(
       tap((res) => this._utilizador.set(res.data)),
     );
   }

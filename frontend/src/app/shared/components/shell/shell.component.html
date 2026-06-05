@@ -65,6 +65,10 @@
           <span>{{ auth.utilizador()?.roles?.[0] ?? '' }}</span>
         </button>
         <mat-divider />
+        <button mat-menu-item routerLink="/perfil">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>O meu perfil</span>
+        </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Terminar Sessão</span>

@@ -40,6 +40,11 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'perfil',
+        loadComponent: () =>
+          import('./features/perfil/perfil.component').then((m) => m.PerfilComponent),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

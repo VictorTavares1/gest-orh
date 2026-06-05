@@ -1,0 +1,189 @@
+<div class="perfil-page">
+
+  <div class="page-header">
+    <h1>O meu perfil</h1>
+    <p>Gerir os seus dados pessoais e credenciais</p>
+  </div>
+
+  @if (utilizador(); as u) {
+    <div class="content-grid">
+
+      <!-- ─── Coluna principal ─────────────────────────────────────────── -->
+      <div class="col-main">
+
+        <!-- Dados pessoais -->
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>person_outline</mat-icon>
+              Dados Pessoais
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="dadosForm" (ngSubmit)="guardarDados()" class="form">
+              <mat-form-field appearance="outline">
+                <mat-label>Nome completo</mat-label>
+                <input matInput formControlName="nome" autocomplete="name" />
+                <mat-icon matPrefix>badge</mat-icon>
+                @if (dadosForm.get('nome')?.invalid && dadosForm.get('nome')?.touched) {
+                  <mat-error>Nome obrigatório (mín. 2 caracteres)</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email" autocomplete="email" />
+                <mat-icon matPrefix>email</mat-icon>
+                @if (dadosForm.get('email')?.invalid && dadosForm.get('email')?.touched) {
+                  <mat-error>Email inválido</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="savingDados()"
+                >
+                  @if (savingDados()) {
+                    <mat-spinner diameter="18" /><span>A guardar...</span>
+                  } @else {
+                    <span class="btn-content"><mat-icon>save</mat-icon>Guardar alterações</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Alterar password -->
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>lock_outline</mat-icon>
+              Alterar Password
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="passwordForm" (ngSubmit)="alterarPassword()" class="form">
+              <mat-form-field appearance="outline">
+                <mat-label>Nova password</mat-label>
+                <input
+                  matInput
+                  formControlName="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                />
+                <mat-icon matPrefix>key</mat-icon>
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="showPassword.set(!showPassword())"
+                >
+                  <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched) {
+                  <mat-error>Password obrigatória (mín. 8 caracteres)</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Confirmar nova password</mat-label>
+                <input
+                  matInput
+                  formControlName="password_confirmation"
+                  [type]="showPasswordNova() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                />
+                <mat-icon matPrefix>key</mat-icon>
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="showPasswordNova.set(!showPasswordNova())"
+                >
+                  <mat-icon>{{ showPasswordNova() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (passwordForm.get('password_confirmation')?.invalid && passwordForm.get('password_confirmation')?.touched) {
+                  <mat-error>Confirmação obrigatória</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="savingPassword()"
+                >
+                  @if (savingPassword()) {
+                    <mat-spinner diameter="18" /><span>A alterar...</span>
+                  } @else {
+                    <span class="btn-content"><mat-icon>lock_reset</mat-icon>Alterar password</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- ─── Coluna lateral ───────────────────────────────────────────── -->
+      <div class="col-side">
+
+        <!-- Avatar e info -->
+        <mat-card class="card card-avatar">
+          <mat-card-content>
+            <div class="avatar-area">
+              <div class="avatar">{{ iniciais() }}</div>
+              <div class="avatar-info">
+                <span class="avatar-nome">{{ u.nome }}</span>
+                <span class="avatar-email">{{ u.email }}</span>
+              </div>
+            </div>
+
+            <mat-divider />
+
+            <div class="info-list">
+              @if (u.setor) {
+                <div class="info-item">
+                  <mat-icon>business</mat-icon>
+                  <div>
+                    <span class="info-label">Setor</span>
+                    <span class="info-valor">{{ u.setor.nome }}</span>
+                  </div>
+                </div>
+                @if (u.setor.organizacao) {
+                  <div class="info-item">
+                    <mat-icon>domain</mat-icon>
+                    <div>
+                      <span class="info-label">Organização</span>
+                      <span class="info-valor">{{ u.setor.organizacao.nome }}</span>
+                    </div>
+                  </div>
+                }
+              }
+              <div class="info-item">
+                <mat-icon>manage_accounts</mat-icon>
+                <div>
+                  <span class="info-label">Perfil de acesso</span>
+                  <div class="roles-list">
+                    @for (role of u.roles; track role) {
+                      <span class="role-badge">{{ roleLabel(role) }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+    </div>
+  }
+
+</div>
