@@ -45,6 +45,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/perfil/perfil.component').then((m) => m.PerfilComponent),
       },
+      {
+        path: 'aprovacoes',
+        loadComponent: () =>
+          import('./features/aprovacoes/aprovacoes.component').then((m) => m.AprovacoesComponent),
+      },
+      {
+        path: 'admin',
+        children: [
+          {
+            path: 'utilizadores',
+            loadComponent: () =>
+              import('./features/admin/utilizadores/admin-utilizadores.component').then((m) => m.AdminUtilizadoresComponent),
+          },
+          { path: '', redirectTo: 'utilizadores', pathMatch: 'full' },
+        ],
+      },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

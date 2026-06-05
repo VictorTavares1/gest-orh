@@ -29,18 +29,32 @@
         <mat-icon matListItemIcon>add_circle_outline</mat-icon>
         <span matListItemTitle>Novo Pedido</span>
       </mat-list-item>
+
+      @if (isDiretora()) {
+        <mat-list-item routerLink="/aprovacoes" routerLinkActive="active-link">
+          <mat-icon matListItemIcon
+            [matBadge]="pendentesCount() > 0 ? pendentesCount() : null"
+            matBadgeColor="warn"
+            matBadgeSize="small">
+            pending_actions
+          </mat-icon>
+          <span matListItemTitle>Aprovações</span>
+        </mat-list-item>
+      }
     </mat-nav-list>
 
-    <mat-divider />
+    @if (isDiretora()) {
+      <mat-divider />
 
-    <p class="nav-section-label">Administração</p>
+      <p class="nav-section-label">Administração</p>
 
-    <mat-nav-list>
-      <mat-list-item routerLink="/admin" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
-        <span matListItemTitle>Administração</span>
-      </mat-list-item>
-    </mat-nav-list>
+      <mat-nav-list>
+        <mat-list-item routerLink="/admin/utilizadores" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>manage_accounts</mat-icon>
+          <span matListItemTitle>Utilizadores</span>
+        </mat-list-item>
+      </mat-nav-list>
+    }
 
   </mat-sidenav>
 

@@ -39,4 +39,16 @@ export class PedidoService {
     return this.http.post<ApiResponse<Pedido>>(`${this.base}/${tipo}`, dados);
   }
 
+  aprovar(id: number): Observable<ApiResponse<Pedido>> {
+    return this.http.post<ApiResponse<Pedido>>(`${this.base}/${id}/aprovar`, {});
+  }
+
+  rejeitar(id: number): Observable<ApiResponse<Pedido>> {
+    return this.http.post<ApiResponse<Pedido>>(`${this.base}/${id}/rejeitar`, {});
+  }
+
+  devolver(id: number, comentario?: string): Observable<ApiResponse<Pedido>> {
+    return this.http.post<ApiResponse<Pedido>>(`${this.base}/${id}/devolver`, { comentario });
+  }
+
 }

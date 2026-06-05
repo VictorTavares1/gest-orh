@@ -1,0 +1,98 @@
+<div class="dialog-header">
+  <mat-icon>{{ isEdicao ? 'edit' : 'person_add' }}</mat-icon>
+  <h2>{{ titulo }}</h2>
+</div>
+
+<mat-dialog-content>
+  @if (loadingRefs()) {
+    <div class="loading-refs">
+      <mat-spinner diameter="32" />
+      <span>A carregar dados...</span>
+    </div>
+  } @else {
+    <form [formGroup]="form" class="utilizador-form">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nome completo</mat-label>
+        <mat-icon matIconPrefix>person</mat-icon>
+        <input matInput formControlName="nome" placeholder="Nome do colaborador" autocomplete="off" />
+        @if (form.controls.nome.hasError('required') && form.controls.nome.touched) {
+          <mat-error>Nome é obrigatório</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <mat-icon matIconPrefix>email</mat-icon>
+        <input matInput formControlName="email" type="email" placeholder="email@exemplo.pt" autocomplete="off" />
+        @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+          <mat-error>Email é obrigatório</mat-error>
+        }
+        @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+          <mat-error>Email inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ isEdicao ? 'Nova password (deixe em branco para manter)' : 'Password' }}</mat-label>
+        <mat-icon matIconPrefix>lock</mat-icon>
+        <input matInput formControlName="password"
+               [type]="mostrarPassword() ? 'text' : 'password'"
+               placeholder="Mínimo 8 caracteres"
+               autocomplete="new-password" />
+        <button matIconSuffix mat-icon-button type="button" (click)="mostrarPassword.set(!mostrarPassword())">
+          <mat-icon>{{ mostrarPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+          <mat-error>Password é obrigatória</mat-error>
+        }
+        @if (form.controls.password.hasError('minlength') && form.controls.password.touched) {
+          <mat-error>Mínimo 8 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="row-dois">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Setor</mat-label>
+          <mat-icon matIconPrefix>business</mat-icon>
+          <mat-select formControlName="id_setor">
+            @for (s of setores; track s.id_setor) {
+              <mat-option [value]="s.id_setor">{{ s.nome }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.id_setor.hasError('min') && form.controls.id_setor.touched) {
+            <mat-error>Selecione um setor</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo / Perfil</mat-label>
+          <mat-icon matIconPrefix>badge</mat-icon>
+          <mat-select formControlName="id_tipo_utilizador">
+            @for (t of tiposUtilizador; track t.id_tipo_utilizador) {
+              <mat-option [value]="t.id_tipo_utilizador">{{ tipoLabel[t.nome] ?? t.nome }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.id_tipo_utilizador.hasError('min') && form.controls.id_tipo_utilizador.touched) {
+            <mat-error>Selecione um perfil</mat-error>
+          }
+        </mat-form-field>
+
+      </div>
+
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="cancelar()" [disabled]="gravando()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="gravar()" [disabled]="gravando() || loadingRefs()">
+    @if (gravando()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      <mat-icon>save</mat-icon>
+    }
+    {{ isEdicao ? 'Guardar alterações' : 'Criar utilizador' }}
+  </button>
+</mat-dialog-actions>
