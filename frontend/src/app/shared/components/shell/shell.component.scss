@@ -1,0 +1,138 @@
+.shell-container {
+  height: 100vh;
+}
+
+// ─── Sidenav ─────────────────────────────────────────────────────────────────
+.shell-sidenav {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb !important;
+
+  .sidenav-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f3f4f6;
+
+    .header-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #1d4ed8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: white;
+      }
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+
+      .brand-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      .brand-sub {
+        font-size: 11px;
+        color: #9ca3af;
+      }
+    }
+  }
+
+  .nav-section-label {
+    padding: 16px 20px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+  }
+
+  mat-nav-list {
+    padding: 4px 12px;
+
+    mat-list-item {
+      height: 42px !important;
+      border-radius: 8px !important;
+      margin-bottom: 2px;
+      color: #374151;
+
+      &:hover {
+        background: #f3f4f6 !important;
+        color: #111827;
+      }
+
+      &.active-link {
+        background: #eff6ff !important;
+        color: #1d4ed8 !important;
+
+        mat-icon { color: #1d4ed8 !important; }
+        span { font-weight: 600; }
+      }
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: #6b7280;
+        margin-right: 4px;
+      }
+
+      span { font-size: 14px; }
+    }
+  }
+
+  mat-divider {
+    margin: 8px 12px;
+    border-color: #f3f4f6;
+  }
+}
+
+// ─── Toolbar ─────────────────────────────────────────────────────────────────
+.shell-toolbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: none !important;
+  height: 56px !important;
+
+  .toolbar-spacer { flex: 1; }
+
+  .user-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+    border-radius: 8px !important;
+    padding: 0 10px !important;
+
+    mat-icon { color: #6b7280; font-size: 20px; width: 20px; height: 20px; }
+  }
+}
+
+// ─── Content ─────────────────────────────────────────────────────────────────
+.shell-content {
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+}
+
+.shell-body {
+  flex: 1;
+  padding: 28px 32px;
+  overflow-y: auto;
+
+  @media (max-width: 768px) { padding: 16px; }
+}

@@ -1,0 +1,74 @@
+@use '@angular/material' as mat;
+
+// ─── Paleta personalizada ──────────────────────────────────────────────────
+$primary-palette: (
+  50: #e8f0fe,
+  100: #c5d8fc,
+  200: #9fbefa,
+  300: #77a3f7,
+  400: #5590f5,
+  500: #1a73e8,
+  600: #1565d8,
+  700: #0e54c2,
+  800: #0843ac,
+  900: #012587,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ─── Reset e base ────────────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  background-color: #f5f7fa;
+  color: #202124;
+}
+
+// ─── Utilitários ────────────────────────────────────────────────────────────
+.full-width { width: 100%; }
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mt-4 { margin-top: 16px; }
+.mb-4 { margin-bottom: 16px; }
+
+// ─── Snackbar personalizado ──────────────────────────────────────────────────
+.snack-success {
+  --mdc-snackbar-container-color: #1e7e34;
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.snack-error {
+  --mdc-snackbar-container-color: #c62828;
+  --mdc-snackbar-supporting-text-color: #fff;
+}

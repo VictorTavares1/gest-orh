@@ -32,19 +32,23 @@ Route::prefix('v1')->name('v1.')->group(function () {
             Route::get('/me', [\App\Http\Controllers\API\V1\AuthController::class, 'me'])->name('me');
         });
 
-        // Referência
+        // Referência — acessível a todos os utilizadores autenticados
         Route::get('/tipos-pedido', [\App\Http\Controllers\API\V1\TipoPedidoController::class, 'index'])->name('tipos-pedido.index');
         Route::get('/estados-pedido', [\App\Http\Controllers\API\V1\EstadoPedidoController::class, 'index'])->name('estados-pedido.index');
         Route::get('/periodos', [\App\Http\Controllers\API\V1\PeriodoController::class, 'index'])->name('periodos.index');
+        Route::get('/setores', [\App\Http\Controllers\API\V1\SetorController::class, 'index'])->name('setores.index');
+        Route::get('/utilizadores', [\App\Http\Controllers\API\V1\UtilizadorController::class, 'index'])->name('utilizadores.index');
 
         // Administração
         Route::middleware('role:diretora_executiva')->group(function () {
             Route::apiResource('/organizacoes', \App\Http\Controllers\API\V1\OrganizacaoController::class)
                 ->parameters(['organizacoes' => 'organizacao']);
             Route::apiResource('/setores', \App\Http\Controllers\API\V1\SetorController::class)
-                ->parameters(['setores' => 'setor']);
+                ->parameters(['setores' => 'setor'])
+                ->except(['index']);
             Route::apiResource('/utilizadores', \App\Http\Controllers\API\V1\UtilizadorController::class)
-                ->parameters(['utilizadores' => 'utilizador']);
+                ->parameters(['utilizadores' => 'utilizador'])
+                ->except(['index']);
             Route::patch('/utilizadores/{utilizador}/ativar', [\App\Http\Controllers\API\V1\UtilizadorController::class, 'ativar'])->name('utilizadores.ativar');
             Route::patch('/utilizadores/{utilizador}/desativar', [\App\Http\Controllers\API\V1\UtilizadorController::class, 'desativar'])->name('utilizadores.desativar');
             Route::apiResource('/periodos', \App\Http\Controllers\API\V1\PeriodoController::class)->except(['index']);

@@ -1,0 +1,310 @@
+<div class="dashboard-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Olá, {{ auth.utilizador()?.nome?.split(' ')?.at(0) }}!</h1>
+      <p>Aqui está o resumo da sua atividade.</p>
+    </div>
+    <button mat-flat-button color="primary" routerLink="/pedidos/novo">
+      <mat-icon>add</mat-icon>
+      Novo Pedido
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-progress-bar mode="indeterminate" />
+      <p>A carregar dashboard...</p>
+    </div>
+  }
+
+  <!-- Erro -->
+  @if (error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- ─── FUNCIONÁRIO ─────────────────────────────────────────────────── -->
+  @if (asFuncionario; as d) {
+    <div class="stats-grid">
+
+      <!-- Total de pedidos -->
+      <mat-card class="stat-card stat-primary">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.meus_pedidos.total }}</span>
+            <span class="stat-label">Total de pedidos</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Pendentes de aprovação colega -->
+      <mat-card class="stat-card" [class.stat-alert]="d.pendentes_minha_aprovacao > 0">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.pendentes_minha_aprovacao }}</span>
+            <span class="stat-label">Aguardam a minha aprovação</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Aprovados -->
+      <mat-card class="stat-card stat-success">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.meus_pedidos.por_estado['APROVADO'] || 0 }}</span>
+            <span class="stat-label">Aprovados</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Em análise -->
+      <mat-card class="stat-card stat-warning">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>hourglass_empty</mat-icon>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">
+              {{ (d.meus_pedidos.por_estado['PENDENTE'] || 0) +
+                 (d.meus_pedidos.por_estado['EM_APROVACAO_COLEGA'] || 0) +
+                 (d.meus_pedidos.por_estado['EM_APROVACAO_EXECUTIVA'] || 0) }}
+            </span>
+            <span class="stat-label">Em análise</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <div class="bottom-grid">
+
+      <!-- Pedidos por estado -->
+      <mat-card class="estados-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pie_chart</mat-icon>
+            Os meus pedidos por estado
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @if (estadoEntries(d.meus_pedidos.por_estado).length === 0) {
+            <div class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <span>Ainda não tem pedidos.</span>
+              <button mat-stroked-button color="primary" routerLink="/pedidos/novo">
+                Criar primeiro pedido
+              </button>
+            </div>
+          } @else {
+            <div class="estado-list">
+              @for (entry of estadoEntries(d.meus_pedidos.por_estado); track entry.key) {
+                <div class="estado-row">
+                  <span class="estado-badge" [class]="estadoColor(entry.key)">
+                    {{ estadoLabel(entry.key) }}
+                  </span>
+                  <div class="estado-bar-wrap">
+                    <mat-progress-bar
+                      mode="determinate"
+                      [value]="(entry.value / d.meus_pedidos.total) * 100"
+                    />
+                  </div>
+                  <span class="estado-count">{{ entry.value }}</span>
+                </div>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Pedidos recentes -->
+      <mat-card class="recentes-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>history</mat-icon>
+            Pedidos recentes
+          </mat-card-title>
+          <button mat-button color="primary" routerLink="/pedidos">Ver todos</button>
+        </mat-card-header>
+        <mat-card-content>
+          @if (d.recentes.length === 0) {
+            <div class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <span>Sem pedidos recentes.</span>
+            </div>
+          } @else {
+            <div class="recentes-list">
+              @for (pedido of d.recentes; track pedido.id_pedido) {
+                <div class="recente-item" [routerLink]="['/pedidos', pedido.id_pedido]">
+                  <div class="recente-main">
+                    <span class="recente-tipo">{{ pedido.tipo }}</span>
+                    <span class="estado-badge sm" [class]="estadoColor(pedido.estado)">
+                      {{ estadoLabel(pedido.estado) }}
+                    </span>
+                  </div>
+                  <span class="recente-data">{{ pedido.data_criacao | date:'dd/MM/yyyy' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  }
+
+  <!-- ─── DIRETOR TÉCNICO ─────────────────────────────────────────────── -->
+  @if (asDiretor; as d) {
+    <div class="stats-grid">
+      <mat-card class="stat-card stat-primary">
+        <mat-card-content>
+          <div class="stat-icon"><mat-icon>assignment</mat-icon></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.meus_pedidos.total }}</span>
+            <span class="stat-label">Os meus pedidos</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card" [class.stat-alert]="d.pendentes_minha_aprovacao > 0">
+        <mat-card-content>
+          <div class="stat-icon"><mat-icon>pending_actions</mat-icon></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.pendentes_minha_aprovacao }}</span>
+            <span class="stat-label">Aguardam a minha aprovação</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="bottom-grid">
+      <mat-card class="recentes-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>history</mat-icon> Os meus pedidos recentes</mat-card-title>
+          <button mat-button color="primary" routerLink="/pedidos">Ver todos</button>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="recentes-list">
+            @for (pedido of d.recentes; track pedido.id_pedido) {
+              <div class="recente-item" [routerLink]="['/pedidos', pedido.id_pedido]">
+                <div class="recente-main">
+                  <span class="recente-tipo">{{ pedido.tipo }}</span>
+                  <span class="estado-badge sm" [class]="estadoColor(pedido.estado)">{{ estadoLabel(pedido.estado) }}</span>
+                </div>
+                <span class="recente-data">{{ pedido.data_criacao | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="recentes-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>group</mat-icon> Pedidos recentes do setor</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="recentes-list">
+            @for (pedido of d.pedidos_setor_recentes; track pedido.id_pedido) {
+              <div class="recente-item" [routerLink]="['/pedidos', pedido.id_pedido]">
+                <div class="recente-main">
+                  <span class="recente-tipo">{{ pedido.utilizador }} — {{ pedido.tipo }}</span>
+                  <span class="estado-badge sm" [class]="estadoColor(pedido.estado)">{{ estadoLabel(pedido.estado) }}</span>
+                </div>
+                <span class="recente-data">{{ pedido.data_criacao | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  <!-- ─── DIRETORA EXECUTIVA ──────────────────────────────────────────── -->
+  @if (asExecutiva; as d) {
+    <div class="stats-grid">
+      <mat-card class="stat-card stat-primary">
+        <mat-card-content>
+          <div class="stat-icon"><mat-icon>assignment</mat-icon></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.global.total }}</span>
+            <span class="stat-label">Total de pedidos (global)</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card" [class.stat-alert]="d.aguardam_aprovacao > 0">
+        <mat-card-content>
+          <div class="stat-icon"><mat-icon>pending_actions</mat-icon></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.aguardam_aprovacao }}</span>
+            <span class="stat-label">Aguardam aprovação executiva</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="stat-card stat-success">
+        <mat-card-content>
+          <div class="stat-icon"><mat-icon>check_circle</mat-icon></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.global.por_estado['APROVADO'] || 0 }}</span>
+            <span class="stat-label">Aprovados</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="bottom-grid">
+      <mat-card class="estados-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>pie_chart</mat-icon> Pedidos por estado (global)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="estado-list">
+            @for (entry of estadoEntries(d.global.por_estado); track entry.key) {
+              <div class="estado-row">
+                <span class="estado-badge" [class]="estadoColor(entry.key)">{{ estadoLabel(entry.key) }}</span>
+                <div class="estado-bar-wrap">
+                  <mat-progress-bar mode="determinate" [value]="(entry.value / d.global.total) * 100" />
+                </div>
+                <span class="estado-count">{{ entry.value }}</span>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="recentes-card">
+        <mat-card-header>
+          <mat-card-title><mat-icon>history</mat-icon> Pedidos recentes</mat-card-title>
+          <button mat-button color="primary" routerLink="/pedidos">Ver todos</button>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="recentes-list">
+            @for (pedido of d.recentes; track pedido.id_pedido) {
+              <div class="recente-item" [routerLink]="['/pedidos', pedido.id_pedido]">
+                <div class="recente-main">
+                  <span class="recente-tipo">{{ pedido.utilizador }} — {{ pedido.tipo }}</span>
+                  <span class="estado-badge sm" [class]="estadoColor(pedido.estado)">{{ estadoLabel(pedido.estado) }}</span>
+                </div>
+                <span class="recente-data">{{ pedido.data_criacao | date:'dd/MM/yyyy' }}</span>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+</div>

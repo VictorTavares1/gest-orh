@@ -1,0 +1,89 @@
+<div class="login-page">
+  <div class="login-brand">
+    <div class="brand-logo">
+      <mat-icon>corporate_fare</mat-icon>
+    </div>
+    <h1 class="brand-name">Gestão RH</h1>
+    <p class="brand-tagline">Sistema de Gestão de Recursos Humanos</p>
+  </div>
+
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Iniciar Sessão</mat-card-title>
+      <mat-card-subtitle>Introduza as suas credenciais</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        @if (serverError()) {
+          <div class="server-error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ serverError() }}</span>
+          </div>
+        }
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-mail</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="utilizador@empresa.pt"
+            autocomplete="email"
+          />
+          <mat-icon matPrefix>email</mat-icon>
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+            <mat-error>{{ emailError }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Palavra-passe</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword.set(!hidePassword())"
+            [attr.aria-label]="hidePassword() ? 'Mostrar palavra-passe' : 'Ocultar palavra-passe'"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <mat-error>{{ passwordError }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+            <span>A entrar...</span>
+          } @else {
+            <span class="btn-content">
+              <mat-icon>login</mat-icon>
+              Entrar
+            </span>
+          }
+        </button>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <p class="login-footer">
+    © {{ currentYear }} Gestão RH &mdash; Acesso restrito a colaboradores autorizados
+  </p>
+</div>

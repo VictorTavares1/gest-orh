@@ -1,0 +1,279 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 10px !important;
+    height: 42px;
+    font-weight: 600;
+    padding: 0 20px !important;
+  }
+}
+
+// ─── Loading / Erro ──────────────────────────────────────────────────────────
+.loading-state {
+  text-align: center;
+  color: #6b7280;
+  p { margin-top: 12px; font-size: 14px; }
+}
+
+.error-card mat-card-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c62828;
+  mat-icon { color: #c62828; }
+}
+
+// ─── Stats grid ─────────────────────────────────────────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
+    transform: translateY(-2px);
+  }
+
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 20px !important;
+  }
+
+  &.stat-primary .stat-icon  { background: #eff6ff; color: #1d4ed8; }
+  &.stat-success .stat-icon  { background: #f0fdf4; color: #16a34a; }
+  &.stat-warning .stat-icon  { background: #fffbeb; color: #d97706; }
+  &.stat-alert   .stat-icon  { background: #fef2f2; color: #dc2626; }
+  &.stat-alert               { border-color: #fca5a5; }
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #f3f4f6;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { font-size: 26px; width: 26px; height: 26px; }
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: #111827;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+// ─── Bottom grid ─────────────────────────────────────────────────────────────
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.estados-card,
+.recentes-card {
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+
+  mat-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 0;
+  }
+
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+    margin-bottom: 0 !important;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #6b7280;
+    }
+  }
+
+  mat-card-content {
+    padding: 16px 20px 20px !important;
+  }
+}
+
+// ─── Estado list ──────────────────────────────────────────────────────────────
+.estado-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.estado-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .estado-badge {
+    flex-shrink: 0;
+    width: 176px;
+  }
+
+  .estado-bar-wrap {
+    flex: 1;
+
+    mat-progress-bar {
+      border-radius: 4px;
+      height: 6px;
+    }
+  }
+
+  .estado-count {
+    font-weight: 700;
+    min-width: 28px;
+    text-align: right;
+    font-size: 14px;
+    color: #374151;
+  }
+}
+
+// ─── Pedidos recentes ─────────────────────────────────────────────────────────
+.recentes-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.recente-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  gap: 12px;
+
+  &:hover { background: #f9fafb; }
+
+  & + & {
+    border-top: 1px solid #f3f4f6;
+    border-radius: 0;
+    &:last-child { border-radius: 0 0 10px 10px; }
+  }
+}
+
+.recente-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.recente-tipo {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recente-data {
+  font-size: 12px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+// ─── Estado badges ────────────────────────────────────────────────────────────
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &.sm { padding: 2px 8px; font-size: 11px; }
+
+  &.estado-rascunho  { background: #f3f4f6; color: #374151; }
+  &.estado-pendente  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+  &.estado-aprovacao { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+  &.estado-aprovado  { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+  &.estado-rejeitado { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  &.estado-cancelado { background: #f3f4f6; color: #6b7280; }
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: #9ca3af;
+
+  mat-icon { font-size: 48px; width: 48px; height: 48px; opacity: 0.35; }
+  span { font-size: 14px; }
+}
