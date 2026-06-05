@@ -34,4 +34,8 @@ export class PedidoService {
   historico(id: number): Observable<ApiResponse<HistoricoItem[]>> {
     return this.http.get<ApiResponse<HistoricoItem[]>>(`${this.base}/${id}/historico`);
   }
+
+  criar(tipo: string, dados: Record<string, unknown>): Observable<ApiResponse<Pedido>> {
+    return this.http.post<ApiResponse<Pedido>>(`${this.base}/${tipo}`, dados);
+  }
 }

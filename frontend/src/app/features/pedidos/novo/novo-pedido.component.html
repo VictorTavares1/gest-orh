@@ -1,0 +1,201 @@
+<div class="novo-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button mat-icon-button routerLink="/pedidos" matTooltip="Voltar à lista">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>Novo Pedido</h1>
+        <p>Selecione o tipo e preencha os dados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading referência -->
+  @if (loadingRef()) {
+    <div class="loading-full">
+      <mat-spinner diameter="48" />
+    </div>
+  }
+
+  @if (!loadingRef()) {
+    <mat-stepper [linear]="true" #stepper class="stepper">
+
+      <!-- ─── PASSO 1: Tipo de pedido ─────────────────────────────────────── -->
+      <mat-step [completed]="!!tipoSelecionado()">
+        <ng-template matStepLabel>Tipo de Pedido</ng-template>
+
+        <div class="step-content">
+          <p class="step-hint">Selecione o tipo de pedido que pretende criar:</p>
+
+          <div class="tipos-grid">
+            @for (tipo of tiposPedido(); track tipo.id_tipo_pedido) {
+              <button
+                class="tipo-card"
+                [class.selected]="tipoSelecionado()?.id_tipo_pedido === tipo.id_tipo_pedido"
+                (click)="selecionarTipo(tipo)"
+                type="button"
+              >
+                <mat-icon class="tipo-icon">{{ tipoIcon(tipo.slug) }}</mat-icon>
+                <span class="tipo-nome">{{ tipo.nome }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="step-actions">
+            <button
+              mat-flat-button
+              color="primary"
+              matStepperNext
+              [disabled]="!tipoSelecionado()"
+            >
+              Seguinte
+              <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+      <!-- ─── PASSO 2: Campos do tipo ─────────────────────────────────────── -->
+      <mat-step [stepControl]="camposForm">
+        <ng-template matStepLabel>Dados do Pedido</ng-template>
+
+        <div class="step-content">
+          @if (tipoSelecionado(); as tipo) {
+            <div class="tipo-selecionado-header">
+              <mat-icon>{{ tipoIcon(tipo.slug) }}</mat-icon>
+              <span>{{ tipo.nome }}</span>
+            </div>
+          }
+
+          <form [formGroup]="camposForm" class="campos-form" (ngSubmit)="submeter()">
+            <div class="campos-grid">
+
+              @for (campo of camposConfig(); track campo.key) {
+
+                <!-- Campo date (datepicker) -->
+                @if (isDate(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      [formControlName]="campo.key"
+                    />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+                    <mat-datepicker #picker />
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Campo time -->
+                @if (isTime(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <input matInput type="time" [formControlName]="campo.key" />
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Campo number -->
+                @if (isNumber(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <input matInput type="number" min="0" [formControlName]="campo.key" />
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Campo text -->
+                @if (isText(campo)) {
+                  <mat-form-field appearance="outline" class="span-full">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <textarea matInput rows="3" [formControlName]="campo.key"></textarea>
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Select período -->
+                @if (isSelectPeriodo(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <mat-select [formControlName]="campo.key">
+                      @for (p of periodos(); track p.id_periodo) {
+                        <mat-option [value]="p.id_periodo">{{ p.nome }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Select colega -->
+                @if (isSelectColega(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <mat-select [formControlName]="campo.key">
+                      @for (u of utilizadores(); track u.id_utilizador) {
+                        <mat-option [value]="u.id_utilizador">{{ u.nome }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+                <!-- Select setor -->
+                @if (isSelectSetor(campo)) {
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <mat-select [formControlName]="campo.key">
+                      @for (s of setores(); track s.id_setor) {
+                        <mat-option [value]="s.id_setor">{{ s.nome }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
+              }
+            </div>
+
+            <div class="step-actions">
+              <button mat-stroked-button matStepperPrevious type="button">
+                <mat-icon>arrow_back</mat-icon>
+                Anterior
+              </button>
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="submitting()"
+              >
+                @if (submitting()) {
+                  <mat-spinner diameter="18" /><span>A criar...</span>
+                } @else {
+                  <span class="btn-content"><mat-icon>save</mat-icon>Criar Pedido</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-step>
+
+    </mat-stepper>
+  }
+
+</div>

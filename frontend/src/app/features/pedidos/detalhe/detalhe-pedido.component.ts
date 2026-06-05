@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit, input } from '@angular/core';
-import { DatePipe, KeyValuePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -65,7 +65,7 @@ const CAMPOS_IGNORADOS = ['id_pedido', 'created_at', 'updated_at'];
   selector: 'app-detalhe-pedido',
   standalone: true,
   imports: [
-    DatePipe, KeyValuePipe, RouterLink,
+    DatePipe, RouterLink,
     MatCardModule, MatButtonModule, MatIconModule,
     MatDividerModule, MatProgressBarModule, MatProgressSpinnerModule,
     MatDialogModule, MatTooltipModule,
