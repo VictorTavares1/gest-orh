@@ -83,6 +83,8 @@
 .acoes-cell {
   text-align: right;
   padding-right: 8px !important;
+  white-space: nowrap;
+  width: 96px;
 }
 
 .empty-state {
