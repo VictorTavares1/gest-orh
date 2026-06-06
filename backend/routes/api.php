@@ -35,6 +35,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::put('/perfil', [\App\Http\Controllers\API\V1\PerfilController::class, 'update'])->name('perfil.update');
 
         // Referência — acessível a todos os utilizadores autenticados
+        Route::get('/tipos-utilizador', fn () => response()->json(['success' => true, 'data' => \App\Models\TipoUtilizador::all()]))->name('tipos-utilizador.index');
         Route::get('/tipos-pedido', [\App\Http\Controllers\API\V1\TipoPedidoController::class, 'index'])->name('tipos-pedido.index');
         Route::get('/estados-pedido', [\App\Http\Controllers\API\V1\EstadoPedidoController::class, 'index'])->name('estados-pedido.index');
         Route::get('/periodos', [\App\Http\Controllers\API\V1\PeriodoController::class, 'index'])->name('periodos.index');

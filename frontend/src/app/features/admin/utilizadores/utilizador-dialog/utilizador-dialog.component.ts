@@ -52,16 +52,11 @@ export class UtilizadorDialogComponent implements OnInit {
   ngOnInit(): void {
     forkJoin([
       this.adminService.listarSetores(),
-      this.adminService.listarUtilizadores(),
+      this.adminService.listarTiposUtilizador(),
     ]).subscribe({
-      next: ([setoresRes, utilizadoresRes]) => {
+      next: ([setoresRes, tiposRes]) => {
         this.setores = setoresRes.data;
-        // Extrai tipos únicos dos utilizadores existentes
-        const vistos = new Set<number>();
-        this.tiposUtilizador = utilizadoresRes.data
-          .map(u => u.tipo_utilizador)
-          .filter((t): t is NonNullable<typeof t> => !!t && !vistos.has(t.id) && vistos.add(t.id) !== undefined)
-          .map(t => ({ id_tipo_utilizador: t.id, nome: t.nome }));
+        this.tiposUtilizador = tiposRes.data;
         this.loadingRefs.set(false);
         if (this.isEdicao) this.preencherFormulario();
       },

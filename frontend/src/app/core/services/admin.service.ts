@@ -60,6 +60,10 @@ export class AdminService {
 
   // ─── Utilizadores ─────────────────────────────────────────────────────────
 
+  listarTiposUtilizador(): Observable<ApiResponse<TipoUtilizador[]>> {
+    return this.http.get<ApiResponse<TipoUtilizador[]>>(`${this.base}/tipos-utilizador`);
+  }
+
   listarUtilizadores(): Observable<ApiResponse<UtilizadorAdmin[]>> {
     return this.http.get<ApiResponse<UtilizadorAdmin[]>>(`${this.base}/utilizadores`);
   }
