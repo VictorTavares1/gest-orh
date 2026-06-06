@@ -41,6 +41,18 @@ export interface SetorAdmin {
   organizacao: { id_organizacao: number; nome: string } | null;
 }
 
+export interface OrganizacaoAdmin {
+  id_organizacao: number;
+  nome: string;
+  setores?: { id_setor: number; nome: string }[];
+}
+
+export interface PeriodoAdmin {
+  id_periodo: number;
+  data_inicio: string;
+  data_fim: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private http = inject(HttpClient);
@@ -74,11 +86,59 @@ export class AdminService {
     return this.http.get<ApiResponse<SetorAdmin[]>>(`${this.base}/setores`);
   }
 
-  // ─── Tipos de Utilizador ──────────────────────────────────────────────────
+  criarSetor(dados: { nome: string; id_organizacao: number }): Observable<ApiResponse<SetorAdmin>> {
+    return this.http.post<ApiResponse<SetorAdmin>>(`${this.base}/setores`, dados);
+  }
+
+  editarSetor(id: number, dados: { nome: string; id_organizacao: number }): Observable<ApiResponse<SetorAdmin>> {
+    return this.http.patch<ApiResponse<SetorAdmin>>(`${this.base}/setores/${id}`, dados);
+  }
+
+  eliminarSetor(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.base}/setores/${id}`);
+  }
+
+  // ─── Organizações ─────────────────────────────────────────────────────────
+
+  listarOrganizacoes(): Observable<ApiResponse<OrganizacaoAdmin[]>> {
+    return this.http.get<ApiResponse<OrganizacaoAdmin[]>>(`${this.base}/organizacoes`);
+  }
+
+  criarOrganizacao(dados: { nome: string }): Observable<ApiResponse<OrganizacaoAdmin>> {
+    return this.http.post<ApiResponse<OrganizacaoAdmin>>(`${this.base}/organizacoes`, dados);
+  }
+
+  editarOrganizacao(id: number, dados: { nome: string }): Observable<ApiResponse<OrganizacaoAdmin>> {
+    return this.http.patch<ApiResponse<OrganizacaoAdmin>>(`${this.base}/organizacoes/${id}`, dados);
+  }
+
+  eliminarOrganizacao(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.base}/organizacoes/${id}`);
+  }
+
+  // ─── Períodos ─────────────────────────────────────────────────────────────
+
+  listarPeriodos(): Observable<ApiResponse<PeriodoAdmin[]>> {
+    return this.http.get<ApiResponse<PeriodoAdmin[]>>(`${this.base}/periodos`);
+  }
+
+  criarPeriodo(dados: { data_inicio: string; data_fim: string }): Observable<ApiResponse<PeriodoAdmin>> {
+    return this.http.post<ApiResponse<PeriodoAdmin>>(`${this.base}/periodos`, dados);
+  }
+
+  editarPeriodo(id: number, dados: { data_inicio: string; data_fim: string }): Observable<ApiResponse<PeriodoAdmin>> {
+    return this.http.patch<ApiResponse<PeriodoAdmin>>(`${this.base}/periodos/${id}`, dados);
+  }
+
+  eliminarPeriodo(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.base}/periodos/${id}`);
+  }
+
+  // ─── Labels ───────────────────────────────────────────────────────────────
 
   readonly tipoLabel: Record<string, string> = {
-    FUNCIONARIO:       'Funcionário',
-    DIRETOR_TECNICO:   'Diretor Técnico',
-    DIRETORA_EXECUTIVA:'Diretora Executiva',
+    FUNCIONARIO:        'Funcionário',
+    DIRETOR_TECNICO:    'Diretor Técnico',
+    DIRETORA_EXECUTIVA: 'Diretora Executiva',
   };
 }

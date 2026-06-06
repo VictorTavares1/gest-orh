@@ -51,8 +51,7 @@ export class AuthService {
   }
 
   atualizarPerfil(dados: { nome?: string; email?: string; password?: string }): Observable<ApiResponse<Utilizador>> {
-    const id = this._utilizador()?.id_utilizador;
-    return this.http.put<ApiResponse<Utilizador>>(`${environment.apiUrl}/utilizadores/${id}`, dados).pipe(
+    return this.http.put<ApiResponse<Utilizador>>(`${environment.apiUrl}/perfil`, dados).pipe(
       tap((res) => this._utilizador.set(res.data)),
     );
   }

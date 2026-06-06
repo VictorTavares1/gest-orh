@@ -1,0 +1,95 @@
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  h1 { margin: 0 0 4px; font-size: 26px; font-weight: 700; color: #111827; }
+  p  { margin: 0; color: #6b7280; font-size: 14px; }
+
+  button { display: flex; align-items: center; gap: 6px; border-radius: 10px !important; height: 42px; font-weight: 600; padding: 0 20px !important; }
+}
+
+.filtros-card {
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+  mat-card-content { padding: 16px !important; }
+}
+
+.filtro-pesquisa {
+  width: 100%;
+  max-width: 480px;
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+.tabela-card {
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+  overflow: hidden;
+  mat-card-content { padding: 0 !important; }
+}
+
+.data-table {
+  width: 100%;
+
+  th.mat-header-cell {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: #6b7280; background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb; padding: 14px 16px;
+  }
+
+  td.mat-cell {
+    padding: 14px 16px; border-bottom: 1px solid #f3f4f6;
+    font-size: 14px; color: #374151;
+  }
+}
+
+.data-row {
+  transition: background 0.15s;
+  &:hover td { background: #f9fafb; }
+  &:last-child td { border-bottom: none; }
+}
+
+.nome-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #eef2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { color: #4f46e5; font-size: 18px; width: 18px; height: 18px; }
+}
+
+.sub-cell { color: #6b7280 !important; font-size: 13px !important; }
+
+.acoes-cell {
+  text-align: right;
+  padding-right: 8px !important;
+}
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 64px 16px; text-align: center;
+
+  mat-icon { font-size: 56px; width: 56px; height: 56px; color: #d1d5db; }
+  h3 { margin: 0; font-size: 18px; font-weight: 600; color: #374151; }
+  p  { margin: 0; color: #6b7280; font-size: 14px; }
+}

@@ -1,0 +1,82 @@
+<div class="admin-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Períodos</h1>
+      <p>Gerir os períodos usados nos pedidos de férias e outros.</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="abrirCriar()">
+      <mat-icon>add</mat-icon>
+      Novo Período
+    </button>
+  </div>
+
+  <mat-card class="filtros-card">
+    <mat-card-content>
+      <mat-form-field appearance="outline" floatLabel="always" class="filtro-pesquisa">
+        <mat-label>Pesquisa</mat-label>
+        <mat-icon matIconPrefix>search</mat-icon>
+        <input matInput [(ngModel)]="pesquisa" autocomplete="off" placeholder="Pesquisar por data..." />
+        @if (pesquisa) {
+          <button matIconSuffix mat-icon-button type="button" (click)="pesquisa = ''">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="tabela-card">
+    @if (loading()) { <mat-progress-bar mode="indeterminate" /> }
+    <mat-card-content>
+      @if (!loading() && periodosFiltrados().length === 0) {
+        <div class="empty-state">
+          <mat-icon>date_range</mat-icon>
+          <h3>Sem períodos</h3>
+          <p>{{ pesquisa ? 'Nenhum resultado para a pesquisa.' : 'Ainda não existem períodos registados.' }}</p>
+        </div>
+      } @else {
+        <table mat-table [dataSource]="periodosFiltrados()" class="data-table">
+
+          <ng-container matColumnDef="data_inicio">
+            <th mat-header-cell *matHeaderCellDef>Data de Início</th>
+            <td mat-cell *matCellDef="let p">
+              <div class="nome-cell">
+                <div class="icon-circle"><mat-icon>today</mat-icon></div>
+                <span>{{ p.data_inicio | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="data_fim">
+            <th mat-header-cell *matHeaderCellDef>Data de Fim</th>
+            <td mat-cell *matCellDef="let p" class="sub-cell">{{ p.data_fim | date:'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="duracao">
+            <th mat-header-cell *matHeaderCellDef>Duração</th>
+            <td mat-cell *matCellDef="let p">
+              <span class="duracao-badge">{{ duracaoDias(p.data_inicio, p.data_fim) }} dias</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let p" class="acoes-cell">
+              <button mat-icon-button color="primary" matTooltip="Editar" (click)="abrirEditar(p)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="eliminar(p)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+          <tr mat-row *matRowDef="let p; columns: colunas" class="data-row"></tr>
+        </table>
+      }
+    </mat-card-content>
+  </mat-card>
+
+</div>

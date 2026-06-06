@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -47,11 +48,13 @@ export const routes: Routes = [
       },
       {
         path: 'aprovacoes',
+        canActivate: [roleGuard('diretora_executiva')],
         loadComponent: () =>
           import('./features/aprovacoes/aprovacoes.component').then((m) => m.AprovacoesComponent),
       },
       {
         path: 'admin',
+        canActivate: [roleGuard('diretora_executiva')],
         children: [
           {
             path: 'utilizadores',
@@ -62,6 +65,21 @@ export const routes: Routes = [
             path: 'relatorio',
             loadComponent: () =>
               import('./features/admin/relatorio/admin-relatorio.component').then((m) => m.AdminRelatorioComponent),
+          },
+          {
+            path: 'organizacoes',
+            loadComponent: () =>
+              import('./features/admin/organizacoes/admin-organizacoes.component').then((m) => m.AdminOrganizacoesComponent),
+          },
+          {
+            path: 'setores',
+            loadComponent: () =>
+              import('./features/admin/setores/admin-setores.component').then((m) => m.AdminSetoresComponent),
+          },
+          {
+            path: 'periodos',
+            loadComponent: () =>
+              import('./features/admin/periodos/admin-periodos.component').then((m) => m.AdminPeriodosComponent),
           },
           { path: '', redirectTo: 'utilizadores', pathMatch: 'full' },
         ],
