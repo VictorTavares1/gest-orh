@@ -30,7 +30,7 @@ enum TipoUtilizadorEnum: string
     {
         return match($this) {
             self::FUNCIONARIO        => [PapelAprovadorEnum::COLEGA],
-            self::DIRETOR_TECNICO    => [PapelAprovadorEnum::COLEGA, PapelAprovadorEnum::DIRETOR_TECNICO],
+            self::DIRETOR_TECNICO    => [PapelAprovadorEnum::COLEGA],
             self::DIRETORA_EXECUTIVA => PapelAprovadorEnum::cases(),
         };
     }

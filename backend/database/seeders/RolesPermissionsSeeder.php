@@ -15,7 +15,6 @@ class RolesPermissionsSeeder extends Seeder
         'pedidos.ver.todos',
         'pedidos.cancelar.proprio',
         'aprovacoes.colega',
-        'aprovacoes.diretor_tecnico',
         'aprovacoes.diretora_executiva',
         'utilizadores.ver',
         'utilizadores.gerir',
@@ -43,7 +42,7 @@ class RolesPermissionsSeeder extends Seeder
         $diretor = Role::firstOrCreate(['name' => 'diretor_tecnico', 'guard_name' => 'sanctum']);
         $diretor->syncPermissions([
             'pedidos.criar', 'pedidos.ver.proprios', 'pedidos.ver.setor',
-            'pedidos.cancelar.proprio', 'aprovacoes.colega', 'aprovacoes.diretor_tecnico',
+            'pedidos.cancelar.proprio', 'aprovacoes.colega',
             'utilizadores.ver', 'dashboard.ver',
         ]);
 
