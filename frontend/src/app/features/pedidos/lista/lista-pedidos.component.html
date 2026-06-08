@@ -62,6 +62,7 @@
                   <p>{{ (filtrosMeus.controls.estado.value || filtrosMeus.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Ainda não criou nenhum pedido.' }}</p>
                 </div>
               } @else {
+                <div class="table-wrapper">
                 <table mat-table [dataSource]="pedidosMeusFiltrados()" class="pedidos-table">
                   <ng-container matColumnDef="tipo">
                     <th mat-header-cell *matHeaderCellDef>Tipo de Pedido</th>
@@ -84,6 +85,7 @@
                   <tr mat-header-row *matHeaderRowDef="colunasMeus"></tr>
                   <tr mat-row *matRowDef="let p; columns: colunasMeus" class="pedido-row" [routerLink]="['/pedidos', p.id_pedido]"></tr>
                 </table>
+                </div>
                 <mat-paginator [length]="totalMeus()" [pageSize]="porPaginaMeus()" [pageSizeOptions]="[10,15,25]" [pageIndex]="paginaMeus()-1" (page)="onPaginaMeus($event)" showFirstLastButtons />
               }
             </mat-card-content>
@@ -138,6 +140,7 @@
                   <p>{{ (filtrosSetor.controls.estado.value || filtrosSetor.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Sem pedidos no setor.' }}</p>
                 </div>
               } @else {
+                <div class="table-wrapper">
                 <table mat-table [dataSource]="pedidosSetorFiltrados()" class="pedidos-table">
                   <ng-container matColumnDef="funcionario">
                     <th mat-header-cell *matHeaderCellDef>Funcionário</th>
@@ -169,6 +172,7 @@
                   <tr mat-header-row *matHeaderRowDef="colunasSetor"></tr>
                   <tr mat-row *matRowDef="let p; columns: colunasSetor" class="pedido-row" [routerLink]="['/pedidos', p.id_pedido]"></tr>
                 </table>
+                </div>
               }
             </mat-card-content>
           </mat-card>

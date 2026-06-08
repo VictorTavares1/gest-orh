@@ -1,6 +1,6 @@
 <mat-sidenav-container class="shell-container">
 
-  <mat-sidenav class="shell-sidenav" [opened]="sidenavOpen()" mode="side">
+  <mat-sidenav class="shell-sidenav" [opened]="sidenavOpen()" [mode]="isMobile() ? 'over' : 'side'">
 
     <div class="sidenav-header">
       <div class="header-icon">
@@ -15,23 +15,23 @@
     <p class="nav-section-label">Menu</p>
 
     <mat-nav-list>
-      <mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+      <mat-list-item routerLink="/dashboard" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </mat-list-item>
 
-      <mat-list-item routerLink="/pedidos" routerLinkActive="active-link">
+      <mat-list-item routerLink="/pedidos" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
         <mat-icon matListItemIcon>assignment</mat-icon>
         <span matListItemTitle>Os Meus Pedidos</span>
       </mat-list-item>
 
-      <mat-list-item routerLink="/pedidos/novo" routerLinkActive="active-link">
+      <mat-list-item routerLink="/pedidos/novo" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
         <mat-icon matListItemIcon>add_circle_outline</mat-icon>
         <span matListItemTitle>Novo Pedido</span>
       </mat-list-item>
 
       @if (isDiretora()) {
-        <mat-list-item routerLink="/aprovacoes" routerLinkActive="active-link">
+        <mat-list-item routerLink="/aprovacoes" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon
             [matBadge]="pendentesCount() > 0 ? pendentesCount() : null"
             matBadgeColor="warn"
@@ -49,23 +49,23 @@
       <p class="nav-section-label">Administração</p>
 
       <mat-nav-list>
-        <mat-list-item routerLink="/admin/utilizadores" routerLinkActive="active-link">
+        <mat-list-item routerLink="/admin/utilizadores" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon>manage_accounts</mat-icon>
           <span matListItemTitle>Utilizadores</span>
         </mat-list-item>
-        <mat-list-item routerLink="/admin/organizacoes" routerLinkActive="active-link">
+        <mat-list-item routerLink="/admin/organizacoes" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon>domain</mat-icon>
           <span matListItemTitle>Organizações</span>
         </mat-list-item>
-        <mat-list-item routerLink="/admin/setores" routerLinkActive="active-link">
+        <mat-list-item routerLink="/admin/setores" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon>business</mat-icon>
           <span matListItemTitle>Setores</span>
         </mat-list-item>
-        <mat-list-item routerLink="/admin/periodos" routerLinkActive="active-link">
+        <mat-list-item routerLink="/admin/periodos" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon>date_range</mat-icon>
           <span matListItemTitle>Períodos</span>
         </mat-list-item>
-        <mat-list-item routerLink="/admin/relatorio" routerLinkActive="active-link">
+        <mat-list-item routerLink="/admin/relatorio" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon>bar_chart</mat-icon>
           <span matListItemTitle>Relatório Mensal</span>
         </mat-list-item>

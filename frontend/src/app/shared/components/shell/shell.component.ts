@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,9 +28,18 @@ export class ShellComponent implements OnInit {
   readonly auth = inject(AuthService);
   private pedidoService = inject(PedidoService);
 
-  readonly sidenavOpen = signal(true);
+  readonly isMobile = signal(window.innerWidth < 768);
+  readonly sidenavOpen = signal(window.innerWidth >= 768);
   readonly isDiretora = this.auth.hasRole('diretora_executiva');
   readonly pendentesCount = signal(0);
+
+  @HostListener('window:resize')
+  onResize(): void {
+    const mobile = window.innerWidth < 768;
+    this.isMobile.set(mobile);
+    if (!mobile) this.sidenavOpen.set(true);
+    else this.sidenavOpen.set(false);
+  }
 
   ngOnInit(): void {
     if (this.isDiretora()) {

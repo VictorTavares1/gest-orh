@@ -71,6 +71,7 @@
           <p>{{ (pesquisa || filtroTipo || filtroAtivo) ? 'Nenhum resultado para os filtros aplicados.' : 'Ainda não existem utilizadores registados.' }}</p>
         </div>
       } @else {
+        <div class="table-wrapper">
         <table mat-table [dataSource]="utilizadoresFiltrados()" class="utilizadores-table">
 
           <!-- Avatar -->
@@ -146,6 +147,7 @@
               [class.inativo-row]="!u.ativo"
               [class.processando]="processando() === u.id_utilizador"></tr>
         </table>
+        </div>
       }
 
     </mat-card-content>

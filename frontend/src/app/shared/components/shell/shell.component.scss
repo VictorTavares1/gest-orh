@@ -134,5 +134,11 @@
   padding: 28px 32px;
   overflow-y: auto;
 
-  @media (max-width: 768px) { padding: 16px; }
+  @media (max-width: 768px) { padding: 12px; }
+}
+
+@media (max-width: 768px) {
+  .shell-sidenav { width: 280px !important; }
+
+  .user-btn span { display: none; }
 }

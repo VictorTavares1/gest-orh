@@ -36,6 +36,7 @@
           <p>{{ pesquisa ? 'Nenhum resultado para a pesquisa.' : 'Ainda não existem períodos registados.' }}</p>
         </div>
       } @else {
+        <div class="table-wrapper">
         <table mat-table [dataSource]="periodosFiltrados()" class="data-table">
 
           <ng-container matColumnDef="data_inicio">
@@ -75,6 +76,7 @@
           <tr mat-header-row *matHeaderRowDef="colunas"></tr>
           <tr mat-row *matRowDef="let p; columns: colunas" class="data-row"></tr>
         </table>
+        </div>
       }
     </mat-card-content>
   </mat-card>

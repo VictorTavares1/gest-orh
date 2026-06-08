@@ -38,8 +38,14 @@
   mat-card-content { padding: 0 !important; }
 }
 
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .data-table {
   width: 100%;
+  min-width: 480px;
 
   th.mat-header-cell {
     font-size: 12px; font-weight: 600; text-transform: uppercase;

@@ -62,6 +62,7 @@
           <p>{{ (filtros.controls.tipo.value || filtros.controls.pesquisa.value) ? 'Nenhum resultado para os filtros aplicados.' : 'Não há pedidos a aguardar aprovação.' }}</p>
         </div>
       } @else {
+        <div class="table-wrapper">
         <table mat-table [dataSource]="pedidosFiltrados()" class="aprovacoes-table">
 
           <!-- Funcionário -->
@@ -139,6 +140,7 @@
           <tr mat-row *matRowDef="let p; columns: colunas" class="pedido-row"
               [class.processando]="processando() === p.id_pedido"></tr>
         </table>
+        </div>
 
         <mat-paginator
           [length]="total()"
