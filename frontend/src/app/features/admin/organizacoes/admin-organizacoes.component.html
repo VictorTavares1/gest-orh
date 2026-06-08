@@ -36,6 +36,7 @@
           <p>{{ pesquisa ? 'Nenhum resultado para a pesquisa.' : 'Ainda não existem organizações registadas.' }}</p>
         </div>
       } @else {
+        <div class="table-wrapper">
         <table mat-table [dataSource]="organizacoesFiltradas()" class="data-table">
 
           <ng-container matColumnDef="nome">
@@ -78,6 +79,7 @@
           <tr mat-header-row *matHeaderRowDef="colunas"></tr>
           <tr mat-row *matRowDef="let o; columns: colunas" class="data-row"></tr>
         </table>
+        </div>
       }
     </mat-card-content>
   </mat-card>
