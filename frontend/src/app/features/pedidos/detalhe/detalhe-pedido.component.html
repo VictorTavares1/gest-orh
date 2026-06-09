@@ -99,6 +99,62 @@
           </mat-card>
         }
 
+        <!-- Anexos -->
+        <mat-card class="card-anexos">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>attach_file</mat-icon>
+              Anexos
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+
+            <input #fileInput type="file" class="file-input-hidden"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+              (change)="onFicheiroSelecionado($event)" />
+
+            @if (anexos().length === 0 && !uploadLoading()) {
+              <div class="anexos-empty">
+                <mat-icon>folder_open</mat-icon>
+                <span>Sem anexos.</span>
+              </div>
+            }
+
+            <div class="anexos-lista">
+              @for (anexo of anexos(); track anexo.id_anexo) {
+                <div class="anexo-item">
+                  <mat-icon class="anexo-icon">{{ iconeAnexo(anexo.nome_original) }}</mat-icon>
+                  <span class="anexo-nome" [title]="anexo.nome_original">{{ anexo.nome_original }}</span>
+                  <button mat-icon-button (click)="downloadAnexo(anexo)" matTooltip="Descarregar">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  @if (podeGerirAnexos()) {
+                    <button mat-icon-button color="warn" (click)="eliminarAnexo(anexo)" matTooltip="Remover">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (uploadLoading()) {
+              <div class="upload-loading">
+                <mat-spinner diameter="24" />
+                <span>A enviar ficheiro...</span>
+              </div>
+            }
+
+            @if (podeGerirAnexos()) {
+              <button mat-stroked-button class="btn-upload" (click)="abrirSeletorFicheiro()" [disabled]="uploadLoading()">
+                <mat-icon>upload</mat-icon>
+                Adicionar Anexo
+              </button>
+              <p class="upload-hint">PDF, imagem, Word ou Excel · máx. 10 MB</p>
+            }
+
+          </mat-card-content>
+        </mat-card>
+
       </div>
 
       <!-- Coluna lateral: histórico -->
@@ -120,7 +176,7 @@
               <div class="timeline">
                 @for (item of historico(); track item.id_historico; let last = $last) {
                   <div class="timeline-item">
-                    <div class="timeline-dot" [class]="estadoClass(item.estado_novo?.nome ?? '')"></div>
+                    <div class="timeline-dot" [class]="estadoClass(item.estado_novo.nome)"></div>
                     @if (!last) { <div class="timeline-line"></div> }
                     <div class="timeline-content">
                       <div class="timeline-estados">
@@ -130,8 +186,8 @@
                           </span>
                           <mat-icon class="arrow-icon">arrow_forward</mat-icon>
                         }
-                        <span class="estado-badge sm" [class]="estadoClass(item.estado_novo?.nome ?? '')">
-                          {{ item.estado_novo?.label }}
+                        <span class="estado-badge sm" [class]="estadoClass(item.estado_novo.nome)">
+                          {{ item.estado_novo.label }}
                         </span>
                       </div>
                       <span class="timeline-meta">

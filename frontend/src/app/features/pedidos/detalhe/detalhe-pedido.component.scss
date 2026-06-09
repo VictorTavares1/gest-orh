@@ -275,3 +275,85 @@ mat-card {
   &.estado-rejeitado { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
   &.estado-cancelado { background: #f3f4f6; color: #6b7280; }
 }
+
+// ─── Anexos ──────────────────────────────────────────────────────────────────
+.file-input-hidden { display: none; }
+
+.anexos-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9ca3af;
+  font-size: 13px;
+  padding: 8px 0 12px;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+.anexos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.anexo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+
+  .anexo-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #6b7280;
+    flex-shrink: 0;
+  }
+
+  .anexo-nome {
+    flex: 1;
+    font-size: 13px;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  button { flex-shrink: 0; width: 32px; height: 32px; line-height: 32px;
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+}
+
+.upload-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.btn-upload {
+  width: 100%;
+  border-radius: 8px !important;
+  border-style: dashed !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  color: #4f46e5 !important;
+  border-color: #c7d2fe !important;
+
+  &:hover { background: #eef2ff !important; }
+}
+
+.upload-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+}

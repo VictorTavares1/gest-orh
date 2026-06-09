@@ -9,6 +9,7 @@ use App\Models\EstadoPedido;
 use App\Models\HistoricoPedido;
 use App\Models\Pedido;
 use App\Models\Utilizador;
+use App\Notifications\PedidoAtualizadoNotification;
 
 class RejeitarPedidoAction
 {
@@ -30,7 +31,12 @@ class RejeitarPedidoAction
             throw new WorkflowException('Não tem autoridade para rejeitar este pedido no estado atual.');
         }
 
-        return $this->transicionar($user, $pedido, EstadoPedidoEnum::REJEITADO);
+        $resultado = $this->transicionar($user, $pedido, EstadoPedidoEnum::REJEITADO);
+
+        $resultado->loadMissing('utilizador');
+        $resultado->utilizador?->notify(new PedidoAtualizadoNotification($resultado, 'rejeitado'));
+
+        return $resultado;
     }
 
     private function determinaPapel(Utilizador $user): PapelAprovadorEnum

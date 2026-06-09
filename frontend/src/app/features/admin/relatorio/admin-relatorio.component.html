@@ -1,6 +1,6 @@
 <div class="relatorio-page">
 
-  <!-- ─── Header (oculto na impressão) ──────────────────────────────────────── -->
+  <!-- ─── Header ──────────────────────────────────────────────────────────────── -->
   <div class="page-header no-print">
     <div>
       <h1>Relatório Mensal</h1>
@@ -23,9 +23,10 @@
           }
         </mat-select>
       </mat-form-field>
-      <button mat-flat-button color="primary" (click)="exportarPDF()" [disabled]="loading()">
-        <mat-icon>picture_as_pdf</mat-icon>
-        Exportar PDF
+      <button mat-flat-button color="primary" (click)="exportarPDF()"
+              [disabled]="loading() || exportLoading() || totalPedidos() === 0">
+        <mat-icon [class.spin]="exportLoading()">{{ exportLoading() ? 'sync' : 'picture_as_pdf' }}</mat-icon>
+        {{ exportLoading() ? 'A gerar PDF...' : 'Exportar PDF' }}
       </button>
     </div>
   </div>
@@ -44,7 +45,7 @@
 
   @if (!loading() && totalPedidos() > 0) {
 
-    <!-- ─── Cabeçalho do relatório (visível na impressão) ─────────────────── -->
+    <!-- ─── Cabeçalho de impressão ─────────────────────────────────────────── -->
     <div class="relatorio-header print-only">
       <div class="logo-area">
         <span class="logo-icon">📋</span>
@@ -59,7 +60,7 @@
       </div>
     </div>
 
-    <!-- ─── Resumo geral ──────────────────────────────────────────────────── -->
+    <!-- ─── Resumo geral ─────────────────────────────────────────────────────── -->
     <div class="secao-titulo">
       <h2>Resumo Geral — {{ tituloMes }}</h2>
       <span class="geracao-info no-print">
@@ -87,7 +88,7 @@
       }
     </div>
 
-    <!-- ─── Por tipo de pedido ────────────────────────────────────────────── -->
+    <!-- ─── Por tipo de pedido ───────────────────────────────────────────────── -->
     <mat-card class="secao-card">
       <mat-card-content>
         <h3 class="secao-card-titulo">
@@ -111,7 +112,31 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- ─── Por funcionário ───────────────────────────────────────────────── -->
+    <!-- ─── Por setor ─────────────────────────────────────────────────────────── -->
+    <mat-card class="secao-card">
+      <mat-card-content>
+        <h3 class="secao-card-titulo">
+          <mat-icon>business</mat-icon>
+          Pedidos por Setor
+        </h3>
+        <mat-divider />
+        <div class="lista-metricas">
+          @for (s of porSetor(); track s.nome; let i = $index) {
+            <div class="metrica-row">
+              <span class="metrica-pos">{{ i + 1 }}.</span>
+              <span class="metrica-nome">{{ s.nome }}</span>
+              <div class="barra-wrap">
+                <div class="barra barra-setor" [style.width.%]="(s.total / maxSetor()) * 100"></div>
+              </div>
+              <span class="metrica-valor">{{ s.total }}</span>
+              <span class="metrica-pct">{{ s.percentagem }}%</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ─── Por funcionário ──────────────────────────────────────────────────── -->
     <mat-card class="secao-card">
       <mat-card-content>
         <h3 class="secao-card-titulo">
@@ -121,9 +146,10 @@
         <mat-divider />
         <div class="lista-metricas">
           @for (f of porFuncionario(); track f.nome; let i = $index) {
-            <div class="metrica-row">
+            <div class="metrica-row metrica-row-func">
               <span class="metrica-pos">{{ i + 1 }}.</span>
               <span class="metrica-nome">{{ f.nome }}</span>
+              <span class="metrica-setor">{{ f.setor }}</span>
               <div class="barra-wrap">
                 <div class="barra barra-pessoa" [style.width.%]="(f.total / maxFuncionario()) * 100"></div>
               </div>
@@ -135,7 +161,7 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- ─── Rodapé do relatório (só na impressão) ─────────────────────────── -->
+    <!-- ─── Rodapé de impressão ──────────────────────────────────────────────── -->
     <div class="relatorio-footer print-only">
       <mat-divider />
       <p>Relatório gerado automaticamente pelo sistema Gestão RH · {{ dataGeracao() | date:'dd/MM/yyyy HH:mm' }}</p>

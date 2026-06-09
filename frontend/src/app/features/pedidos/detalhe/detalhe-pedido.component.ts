@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, input } from '@angular/core';
+import { Component, inject, signal, OnInit, input, ViewChild, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
@@ -9,12 +9,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { PedidoService } from '../../../core/services/pedido.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Pedido, HistoricoItem } from '../../../core/models/pedido.model';
+import { Pedido, HistoricoItem, Anexo } from '../../../core/models/pedido.model';
 import { AcaoDialogComponent, AcaoDialogData } from '../../aprovacoes/acao-dialog/acao-dialog.component';
 
 const ESTADOS_TERMINAIS = ['APROVADO', 'REJEITADO', 'CANCELADO'];
@@ -69,7 +69,7 @@ const CAMPOS_IGNORADOS = ['id_pedido', 'created_at', 'updated_at'];
     DatePipe, RouterLink,
     MatCardModule, MatButtonModule, MatIconModule,
     MatDividerModule, MatProgressBarModule, MatProgressSpinnerModule,
-    MatDialogModule, MatTooltipModule,
+    MatDialogModule, MatTooltipModule, MatSnackBarModule,
   ],
   templateUrl: './detalhe-pedido.component.html',
   styleUrl: './detalhe-pedido.component.scss',
@@ -85,10 +85,14 @@ export class DetalhePedidoComponent implements OnInit {
 
   readonly isDiretora = this.auth.hasRole('diretora_executiva');
 
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
   readonly loading = signal(true);
   readonly acaoLoading = signal(false);
+  readonly uploadLoading = signal(false);
   readonly pedido = signal<Pedido | null>(null);
   readonly historico = signal<HistoricoItem[]>([]);
+  readonly anexos = signal<Anexo[]>([]);
 
   ngOnInit(): void {
     this.carregar();
@@ -103,6 +107,7 @@ export class DetalhePedidoComponent implements OnInit {
         this.pedido.set(res.data);
         this.loading.set(false);
         this.carregarHistorico(id);
+        this.carregarAnexos(id);
       },
       error: () => {
         this.loading.set(false);
@@ -116,6 +121,92 @@ export class DetalhePedidoComponent implements OnInit {
     this.pedidoService.historico(id).subscribe({
       next: (res) => this.historico.set(res.data),
     });
+  }
+
+  carregarAnexos(id: number): void {
+    this.pedidoService.listarAnexos(id).subscribe({
+      next: (res) => this.anexos.set(res.data),
+    });
+  }
+
+  podeGerirAnexos(): boolean {
+    const estado = this.pedido()?.estado?.nome;
+    return estado === 'RASCUNHO' || estado === 'PENDENTE';
+  }
+
+  abrirSeletorFicheiro(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFicheiroSelecionado(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const ficheiro = input.files?.[0];
+    if (!ficheiro) return;
+
+    const maxSize = 10 * 1024 * 1024;
+    if (ficheiro.size > maxSize) {
+      this.snackBar.open('O ficheiro não pode exceder 10 MB.', 'Fechar', { duration: 4000, panelClass: 'snack-error' });
+      input.value = '';
+      return;
+    }
+
+    const tiposPermitidos = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    if (!tiposPermitidos.includes(ficheiro.type)) {
+      this.snackBar.open('Tipo de ficheiro não permitido. Use PDF, imagem, Word ou Excel.', 'Fechar', { duration: 4000, panelClass: 'snack-error' });
+      input.value = '';
+      return;
+    }
+
+    const id = Number(this.id());
+    this.uploadLoading.set(true);
+    this.pedidoService.uploadAnexo(id, ficheiro).subscribe({
+      next: (res) => {
+        this.anexos.update(list => [...list, res.data]);
+        this.uploadLoading.set(false);
+        this.snackBar.open('Anexo adicionado com sucesso.', 'Fechar', { duration: 3000, panelClass: 'snack-success' });
+        input.value = '';
+      },
+      error: (err) => {
+        this.uploadLoading.set(false);
+        this.snackBar.open(err?.error?.message ?? 'Erro ao fazer upload.', 'Fechar', { duration: 4000, panelClass: 'snack-error' });
+        input.value = '';
+      },
+    });
+  }
+
+  eliminarAnexo(anexo: Anexo): void {
+    this.pedidoService.eliminarAnexo(anexo.id_anexo).subscribe({
+      next: () => {
+        this.anexos.update(list => list.filter(a => a.id_anexo !== anexo.id_anexo));
+        this.snackBar.open('Anexo removido.', 'Fechar', { duration: 3000 });
+      },
+      error: () => this.snackBar.open('Erro ao remover anexo.', 'Fechar', { duration: 4000, panelClass: 'snack-error' }),
+    });
+  }
+
+  downloadAnexo(anexo: Anexo): void {
+    this.pedidoService.downloadAnexo(anexo.id_anexo).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = anexo.nome_original;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => this.snackBar.open('Erro ao descarregar anexo.', 'Fechar', { duration: 4000, panelClass: 'snack-error' }),
+    });
+  }
+
+  iconeAnexo(nome: string): string {
+    const ext = nome.split('.').pop()?.toLowerCase() ?? '';
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return 'image';
+    if (ext === 'pdf') return 'picture_as_pdf';
+    if (['doc', 'docx'].includes(ext)) return 'description';
+    if (['xls', 'xlsx'].includes(ext)) return 'table_chart';
+    return 'attach_file';
   }
 
   podeSubmeter(): boolean {

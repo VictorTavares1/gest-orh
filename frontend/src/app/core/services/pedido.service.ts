@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Pedido, PedidoFiltros, HistoricoItem } from '../models/pedido.model';
+import { Pedido, PedidoFiltros, HistoricoItem, Anexo } from '../models/pedido.model';
 import { ApiResponse, PaginatedResponse } from '../models/api.model';
 
 @Injectable({ providedIn: 'root' })
@@ -51,6 +51,24 @@ export class PedidoService {
 
   devolver(id: number, comentario?: string): Observable<ApiResponse<Pedido>> {
     return this.http.post<ApiResponse<Pedido>>(`${this.base}/${id}/devolver`, { comentario });
+  }
+
+  listarAnexos(id: number): Observable<ApiResponse<Anexo[]>> {
+    return this.http.get<ApiResponse<Anexo[]>>(`${this.base}/${id}/anexos`);
+  }
+
+  uploadAnexo(id: number, ficheiro: File): Observable<ApiResponse<Anexo>> {
+    const form = new FormData();
+    form.append('ficheiro', ficheiro);
+    return this.http.post<ApiResponse<Anexo>>(`${this.base}/${id}/anexos`, form);
+  }
+
+  eliminarAnexo(idAnexo: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/anexos/${idAnexo}`);
+  }
+
+  downloadAnexo(idAnexo: number): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/anexos/${idAnexo}/download`, { responseType: 'blob' });
   }
 
 }

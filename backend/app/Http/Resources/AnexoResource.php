@@ -10,7 +10,7 @@ class AnexoResource extends JsonResource
     {
         return [
             'id_anexo'      => $this->id_anexo,
-            'nome_original' => basename($this->caminho),
+            'nome_original' => $this->nome_original ?? basename($this->caminho),
             'url_download'  => route('v1.anexos.download', $this->id_anexo),
         ];
     }

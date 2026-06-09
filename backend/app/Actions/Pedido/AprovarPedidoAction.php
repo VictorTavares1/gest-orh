@@ -10,6 +10,7 @@ use App\Models\EstadoPedido;
 use App\Models\HistoricoPedido;
 use App\Models\Pedido;
 use App\Models\Utilizador;
+use App\Notifications\PedidoAtualizadoNotification;
 
 class AprovarPedidoAction
 {
@@ -38,7 +39,15 @@ class AprovarPedidoAction
             ['id_aprovador' => $user->id_utilizador, 'id_estado_pedido' => $estadoDestino->id_estado_pedido]
         );
 
-        return $this->transicionar($user, $pedido, $proximoEstado);
+        $resultado = $this->transicionar($user, $pedido, $proximoEstado);
+
+        // Notificar o funcionário apenas quando o pedido fica definitivamente APROVADO
+        if ($proximoEstado === EstadoPedidoEnum::APROVADO) {
+            $resultado->loadMissing('utilizador');
+            $resultado->utilizador?->notify(new PedidoAtualizadoNotification($resultado, 'aprovado'));
+        }
+
+        return $resultado;
     }
 
     private function determinaPapel(Utilizador $user): PapelAprovadorEnum

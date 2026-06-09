@@ -8,6 +8,7 @@ use App\Models\EstadoPedido;
 use App\Models\HistoricoPedido;
 use App\Models\Pedido;
 use App\Models\Utilizador;
+use App\Notifications\PedidoAtualizadoNotification;
 
 class DevolverPedidoAction
 {
@@ -19,8 +20,12 @@ class DevolverPedidoAction
             throw WorkflowException::transicaoInvalida($estadoAtual, EstadoPedidoEnum::RASCUNHO);
         }
 
-        // $comentario é recebido mas não persistido (decisão de negócio acordada)
-        return $this->transicionar($user, $pedido, EstadoPedidoEnum::RASCUNHO);
+        $resultado = $this->transicionar($user, $pedido, EstadoPedidoEnum::RASCUNHO);
+
+        $resultado->loadMissing('utilizador');
+        $resultado->utilizador?->notify(new PedidoAtualizadoNotification($resultado, 'devolvido'));
+
+        return $resultado;
     }
 
     private function transicionar(Utilizador $user, Pedido $pedido, EstadoPedidoEnum $destino): Pedido

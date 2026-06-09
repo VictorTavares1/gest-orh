@@ -13,6 +13,7 @@ export interface PedidoUtilizador {
   id: number;
   nome: string;
   id_utilizador?: number;
+  setor?: { id: number; nome: string } | null;
 }
 
 export interface HistoricoItem {
@@ -31,6 +32,12 @@ export interface Pedido {
   utilizador: PedidoUtilizador;
   especializacao: Record<string, unknown> | null;
   historico?: HistoricoItem[];
+}
+
+export interface Anexo {
+  id_anexo: number;
+  nome_original: string;
+  caminho: string;
 }
 
 export interface PedidoFiltros {

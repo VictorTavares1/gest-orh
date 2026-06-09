@@ -9,6 +9,7 @@ use App\Models\EstadoPedido;
 use App\Models\HistoricoPedido;
 use App\Models\Pedido;
 use App\Models\Utilizador;
+use App\Notifications\PedidoSubmetidoNotification;
 use Illuminate\Support\Facades\DB;
 
 class SubmeterPedidoAction
@@ -24,7 +25,7 @@ class SubmeterPedidoAction
         $pedido->loadMissing('tipoPedido');
         $tipo = TipoPedidoEnum::fromLabel($pedido->tipoPedido->nome);
 
-        return DB::transaction(function () use ($user, $pedido, $tipo) {
+        $resultado = DB::transaction(function () use ($user, $pedido, $tipo) {
             $this->transicionar($user, $pedido, EstadoPedidoEnum::PENDENTE);
             $pedido->refresh()->load(['estadoPedido', 'tipoPedido', 'utilizador']);
 
@@ -34,6 +35,14 @@ class SubmeterPedidoAction
 
             return $this->transicionar($user, $pedido, $proximo);
         });
+
+        // Notificar a diretora executiva
+        $diretora = Utilizador::role('diretora_executiva')->where('ativo', true)->first();
+        if ($diretora) {
+            $diretora->notify(new PedidoSubmetidoNotification($resultado));
+        }
+
+        return $resultado;
     }
 
     private function transicionar(Utilizador $user, Pedido $pedido, EstadoPedidoEnum $destino): Pedido

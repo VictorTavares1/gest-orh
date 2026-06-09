@@ -12,13 +12,15 @@ class AnexoService
 {
     public function upload(Pedido $pedido, UploadedFile $ficheiro): Anexo
     {
-        $nomeOriginal = preg_replace('/[^a-zA-Z0-9._-]/', '_', $ficheiro->getClientOriginalName());
-        $nome         = time() . '_' . $nomeOriginal;
+        $nomeOriginal = $ficheiro->getClientOriginalName();
+        $nomeSanitizado = preg_replace('/[^a-zA-Z0-9._-]/', '_', $nomeOriginal);
+        $nome     = time() . '_' . $nomeSanitizado;
         $caminho  = $ficheiro->storeAs("pedidos/{$pedido->id_pedido}", $nome, 'public');
 
         return Anexo::create([
-            'id_pedido' => $pedido->id_pedido,
-            'caminho'   => $caminho,
+            'id_pedido'    => $pedido->id_pedido,
+            'caminho'      => $caminho,
+            'nome_original' => $nomeOriginal,
         ]);
     }
 
@@ -36,6 +38,6 @@ class AnexoService
             'Ficheiro não encontrado no servidor.'
         );
 
-        return Storage::disk('public')->download($anexo->caminho, basename($anexo->caminho));
+        return Storage::disk('public')->download($anexo->caminho, $anexo->nome_original ?? basename($anexo->caminho));
     }
 }

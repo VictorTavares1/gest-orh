@@ -11,7 +11,7 @@ class Anexo extends Model
     protected $primaryKey = 'id_anexo';
     public $timestamps = false;
 
-    protected $fillable = ['id_pedido', 'caminho'];
+    protected $fillable = ['id_pedido', 'caminho', 'nome_original'];
 
     public function pedido(): BelongsTo
     {
