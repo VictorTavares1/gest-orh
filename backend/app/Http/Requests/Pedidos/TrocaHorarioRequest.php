@@ -36,7 +36,7 @@ class TrocaHorarioRequest extends FormRequest
                     $fail('O novo horário de fim deve ser posterior ao novo horário de início.');
                 }
             }],
-            'motivo'             => ['required', 'string', 'min:10', 'max:1000'],
+            'motivo'             => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -60,7 +60,7 @@ class TrocaHorarioRequest extends FormRequest
             'horario_novo_fim.required'   => 'O novo horário de fim é obrigatório.',
             'horario_novo_fim.date_format' => 'O horário deve estar no formato HH:MM.',
             'motivo.required'             => 'O motivo é obrigatório.',
-            'motivo.min'                  => 'O motivo deve ter pelo menos 10 caracteres.',
+            'motivo.min'                  => 'O motivo deve ter pelo menos 3 caracteres.',
             'motivo.max'                  => 'O motivo não pode exceder 1000 caracteres.',
         ];
     }

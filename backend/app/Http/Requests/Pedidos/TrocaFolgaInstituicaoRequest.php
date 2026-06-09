@@ -17,7 +17,7 @@ class TrocaFolgaInstituicaoRequest extends FormRequest
             'data_original'    => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'horario_original' => ['required', 'date_format:H:i'],
             'nova_data'        => ['required', 'date_format:Y-m-d', 'after:data_original', 'after_or_equal:today'],
-            'motivo'           => ['required', 'string', 'min:10', 'max:1000'],
+            'motivo'           => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -34,7 +34,7 @@ class TrocaFolgaInstituicaoRequest extends FormRequest
             'nova_data.after'              => 'A nova data deve ser posterior à data original.',
             'nova_data.after_or_equal'     => 'A nova data deve ser hoje ou uma data futura.',
             'motivo.required'              => 'O motivo é obrigatório.',
-            'motivo.min'                   => 'O motivo deve ter pelo menos 10 caracteres.',
+            'motivo.min'                   => 'O motivo deve ter pelo menos 3 caracteres.',
             'motivo.max'                   => 'O motivo não pode exceder 1000 caracteres.',
         ];
     }

@@ -18,7 +18,7 @@ class CompEntradaTardiaRequest extends FormRequest
             'horario'             => ['required', 'date_format:H:i'],
             'num_horas_extras'    => ['required', 'numeric', 'min:0.25', 'max:24'],
             'data_horas_extras'   => ['required', 'date_format:Y-m-d', 'after_or_equal:data_entrada_tardia'],
-            'motivo'              => ['required', 'string', 'min:10', 'max:1000'],
+            'motivo'              => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -38,7 +38,7 @@ class CompEntradaTardiaRequest extends FormRequest
             'data_horas_extras.date_format'      => 'A data deve estar no formato AAAA-MM-DD.',
             'data_horas_extras.after_or_equal'   => 'A data das horas extras não pode ser anterior à data de entrada tardia.',
             'motivo.required'                    => 'O motivo é obrigatório.',
-            'motivo.min'                         => 'O motivo deve ter pelo menos 10 caracteres.',
+            'motivo.min'                         => 'O motivo deve ter pelo menos 3 caracteres.',
             'motivo.max'                         => 'O motivo não pode exceder 1000 caracteres.',
         ];
     }

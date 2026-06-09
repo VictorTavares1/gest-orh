@@ -19,6 +19,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 
 import { PedidoService } from '../../core/services/pedido.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Pedido } from '../../core/models/pedido.model';
 import { AcaoDialogComponent, AcaoDialogData } from './acao-dialog/acao-dialog.component';
 
@@ -55,9 +56,16 @@ const TIPOS_PEDIDO = [
 })
 export class AprovacoesComponent implements OnInit {
   private pedidoService = inject(PedidoService);
+  private auth = inject(AuthService);
   private dialog = inject(MatDialog);
   private snack = inject(MatSnackBar);
   private fb = inject(FormBuilder);
+
+  readonly isDiretora = this.auth.hasRole('diretora_executiva');
+  readonly isSubstituta = this.auth.hasRole('substituta');
+  private get estadoFiltro(): string {
+    return (this.isDiretora() || this.isSubstituta()) ? 'EM_APROVACAO_EXECUTIVA' : 'EM_APROVACAO_COLEGA';
+  }
 
   readonly colunas = ['funcionario', 'tipo', 'estado', 'data_criacao', 'acoes'];
   readonly tiposPedido = TIPOS_PEDIDO;
@@ -87,7 +95,7 @@ export class AprovacoesComponent implements OnInit {
   });
 
   readonly totalPendentes = computed(() =>
-    this.pedidos().filter(p => p.estado?.nome === 'EM_APROVACAO_EXECUTIVA').length
+    this.pedidos().filter(p => p.estado?.nome === this.estadoFiltro).length
   );
 
   ngOnInit(): void {
@@ -100,7 +108,7 @@ export class AprovacoesComponent implements OnInit {
 
   carregar(): void {
     this.loading.set(true);
-    this.pedidoService.listar({ estado: 'EM_APROVACAO_EXECUTIVA', per_page: 200 }).subscribe({
+    this.pedidoService.listar({ estado: this.estadoFiltro, per_page: 200 }).subscribe({
       next: (res) => {
         this.pedidos.set(res.data);
         this.total.set(res.meta.total);

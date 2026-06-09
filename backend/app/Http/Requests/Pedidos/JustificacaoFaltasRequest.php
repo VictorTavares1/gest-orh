@@ -16,7 +16,7 @@ class JustificacaoFaltasRequest extends FormRequest
         return [
             'data_falta' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'hora_falta' => ['required', 'date_format:H:i'],
-            'motivo'     => ['required', 'string', 'min:10', 'max:1000'],
+            'motivo'     => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -29,7 +29,7 @@ class JustificacaoFaltasRequest extends FormRequest
             'hora_falta.required'        => 'A hora da falta é obrigatória.',
             'hora_falta.date_format'     => 'A hora deve estar no formato HH:MM.',
             'motivo.required'            => 'O motivo é obrigatório.',
-            'motivo.min'                 => 'O motivo deve ter pelo menos 10 caracteres.',
+            'motivo.min'                 => 'O motivo deve ter pelo menos 3 caracteres.',
             'motivo.max'                 => 'O motivo não pode exceder 1000 caracteres.',
         ];
     }

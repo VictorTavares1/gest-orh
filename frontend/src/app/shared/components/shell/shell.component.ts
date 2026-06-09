@@ -31,6 +31,8 @@ export class ShellComponent implements OnInit {
   readonly isMobile = signal(window.innerWidth < 768);
   readonly sidenavOpen = signal(window.innerWidth >= 768);
   readonly isDiretora = this.auth.hasRole('diretora_executiva');
+  readonly isSubstituta = this.auth.hasRole('substituta');
+  readonly podeAprovar = this.auth.hasPermission('aprovacoes.colega');
   readonly pendentesCount = signal(0);
 
   @HostListener('window:resize')
@@ -42,13 +44,15 @@ export class ShellComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.isDiretora()) {
-      this.carregarPendentes();
-    }
+    this.carregarPendentes();
   }
 
   private carregarPendentes(): void {
-    this.pedidoService.listar({ estado: 'EM_APROVACAO_EXECUTIVA', per_page: 1 }).subscribe({
+    const estado = this.isDiretora() || this.isSubstituta()
+      ? 'EM_APROVACAO_EXECUTIVA'
+      : 'EM_APROVACAO_COLEGA';
+
+    this.pedidoService.listar({ estado, per_page: 1 }).subscribe({
       next: (res) => this.pendentesCount.set(res.meta.total),
     });
   }

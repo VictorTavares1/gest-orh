@@ -16,7 +16,7 @@ class HorasExtrasRequest extends FormRequest
         return [
             'data_horas'   => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'numero_horas' => ['required', 'numeric', 'min:0.25', 'max:24'],
-            'motivo'       => ['required', 'string', 'min:10', 'max:1000'],
+            'motivo'       => ['required', 'string', 'max:1000'],
         ];
     }
 
@@ -31,7 +31,7 @@ class HorasExtrasRequest extends FormRequest
             'numero_horas.min'           => 'O mínimo é 0.25 horas (15 minutos).',
             'numero_horas.max'           => 'O máximo é 24 horas por dia.',
             'motivo.required'            => 'O motivo é obrigatório.',
-            'motivo.min'                 => 'O motivo deve ter pelo menos 10 caracteres.',
+            'motivo.min'                 => 'O motivo deve ter pelo menos 3 caracteres.',
             'motivo.max'                 => 'O motivo não pode exceder 1000 caracteres.',
         ];
     }

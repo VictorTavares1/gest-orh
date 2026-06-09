@@ -15,7 +15,7 @@ class MotivosAcademicosRequest extends FormRequest
     {
         return [
             'data_ausencia'    => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
-            'motivo_academico' => ['required', 'string', 'min:5', 'max:200'],
+            'motivo_academico' => ['required', 'string', 'max:200'],
         ];
     }
 
@@ -26,7 +26,6 @@ class MotivosAcademicosRequest extends FormRequest
             'data_ausencia.date_format'    => 'A data deve estar no formato AAAA-MM-DD.',
             'data_ausencia.after_or_equal' => 'A data de ausência não pode ser no passado.',
             'motivo_academico.required'    => 'O motivo académico é obrigatório.',
-            'motivo_academico.min'         => 'O motivo académico deve ter pelo menos 5 caracteres.',
             'motivo_academico.max'         => 'O motivo académico não pode exceder 200 caracteres.',
         ];
     }
