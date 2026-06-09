@@ -7,6 +7,7 @@ enum TipoUtilizadorEnum: string
     case FUNCIONARIO         = 'FUNCIONARIO';
     case DIRETOR_TECNICO     = 'DIRETOR_TECNICO';
     case DIRETORA_EXECUTIVA  = 'DIRETORA_EXECUTIVA';
+    case SUBSTITUTA          = 'SUBSTITUTA';
 
     public function label(): string
     {
@@ -14,6 +15,7 @@ enum TipoUtilizadorEnum: string
             self::FUNCIONARIO        => 'Funcionário',
             self::DIRETOR_TECNICO    => 'Diretor Técnico',
             self::DIRETORA_EXECUTIVA => 'Diretora Executiva',
+            self::SUBSTITUTA         => 'Substituta da Diretora',
         };
     }
 
@@ -23,6 +25,7 @@ enum TipoUtilizadorEnum: string
             self::FUNCIONARIO        => 'funcionario',
             self::DIRETOR_TECNICO    => 'diretor_tecnico',
             self::DIRETORA_EXECUTIVA => 'diretora_executiva',
+            self::SUBSTITUTA         => 'substituta',
         };
     }
 
@@ -32,6 +35,7 @@ enum TipoUtilizadorEnum: string
             self::FUNCIONARIO        => [PapelAprovadorEnum::COLEGA],
             self::DIRETOR_TECNICO    => [PapelAprovadorEnum::COLEGA],
             self::DIRETORA_EXECUTIVA => PapelAprovadorEnum::cases(),
+            self::SUBSTITUTA         => PapelAprovadorEnum::cases(),
         };
     }
 }

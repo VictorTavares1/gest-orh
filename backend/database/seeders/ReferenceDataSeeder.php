@@ -13,6 +13,7 @@ class ReferenceDataSeeder extends Seeder
             ['nome' => 'FUNCIONARIO'],
             ['nome' => 'DIRETOR_TECNICO'],
             ['nome' => 'DIRETORA_EXECUTIVA'],
+            ['nome' => 'SUBSTITUTA'],
         ]);
 
         DB::table('estado_pedido')->insertOrIgnore([

@@ -48,5 +48,10 @@ class RolesPermissionsSeeder extends Seeder
 
         $executiva = Role::firstOrCreate(['name' => 'diretora_executiva', 'guard_name' => 'sanctum']);
         $executiva->syncPermissions($this->permissions);
+
+        // Role para substituta da diretora executiva (rececionista ou outro) —
+        // tem exactamente as mesmas permissões mas com um papel distinto na organização
+        $substituta = Role::firstOrCreate(['name' => 'substituta', 'guard_name' => 'sanctum']);
+        $substituta->syncPermissions($this->permissions);
     }
 }

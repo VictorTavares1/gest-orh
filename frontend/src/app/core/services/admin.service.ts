@@ -144,5 +144,6 @@ export class AdminService {
     FUNCIONARIO:        'Funcionário',
     DIRETOR_TECNICO:    'Diretor Técnico',
     DIRETORA_EXECUTIVA: 'Diretora Executiva',
+    SUBSTITUTA:         'Substituta da Diretora',
   };
 }

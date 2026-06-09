@@ -36,10 +36,10 @@ class SubmeterPedidoAction
             return $this->transicionar($user, $pedido, $proximo);
         });
 
-        // Notificar a diretora executiva
-        $diretora = Utilizador::role('diretora_executiva')->where('ativo', true)->first();
-        if ($diretora) {
-            $diretora->notify(new PedidoSubmetidoNotification($resultado));
+        // Notificar quem tem poder de aprovação executiva (diretora ou substituta)
+        $aprovadores = Utilizador::permission('aprovacoes.diretora_executiva')->where('ativo', true)->get();
+        foreach ($aprovadores as $aprovador) {
+            $aprovador->notify(new PedidoSubmetidoNotification($resultado));
         }
 
         return $resultado;
