@@ -21,10 +21,10 @@ const MESES = [
 
 const ESTADO_LABEL: Record<string, string> = {
   RASCUNHO:               'Rascunho',
-  PENDENTE:               'Pendente',
-  EM_APROVACAO_COLEGA:    'Em aprovação (colega)',
-  EM_APROVACAO_DIRETOR:   'Em aprovação (diretor)',
-  EM_APROVACAO_EXECUTIVA: 'Em aprovação (executiva)',
+  PENDENTE:               'Em aprovação',
+  EM_APROVACAO_COLEGA:    'Em aprovação',
+  EM_APROVACAO_DIRETOR:   'Em aprovação',
+  EM_APROVACAO_EXECUTIVA: 'Em aprovação',
   APROVADO:               'Aprovado',
   REJEITADO:              'Rejeitado',
   CANCELADO:              'Cancelado',

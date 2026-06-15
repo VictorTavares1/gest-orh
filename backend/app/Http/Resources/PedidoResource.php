@@ -44,7 +44,7 @@ class PedidoResource extends JsonResource
             'horasExtras', 'justificacaoFaltas', 'marcacaoFerias', 'alteracaoFerias',
             'trocaHorario', 'trocaFolgaInstituicao', 'interrupcaoAtividade', 'folgaAniversario',
             'assiduidade', 'licencaNojo', 'formacao', 'motivosAcademicos',
-            'compEntradaTardia', 'compSaidaAntecipada',
+            'compEntradaTardia', 'compSaidaAntecipada', 'outros',
         ];
 
         foreach ($relacoes as $relacao) {

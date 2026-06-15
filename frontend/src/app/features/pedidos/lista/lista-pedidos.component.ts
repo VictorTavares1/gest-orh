@@ -23,10 +23,7 @@ import { Pedido } from '../../../core/models/pedido.model';
 
 const ESTADOS = [
   { value: 'RASCUNHO',               label: 'Rascunho' },
-  { value: 'PENDENTE',               label: 'Pendente' },
-  { value: 'EM_APROVACAO_COLEGA',    label: 'Em aprovação (colega)' },
-  { value: 'EM_APROVACAO_DIRETOR',   label: 'Em aprovação (diretor)' },
-  { value: 'EM_APROVACAO_EXECUTIVA', label: 'Em aprovação (executiva)' },
+  { value: 'EM_APROVACAO_EXECUTIVA', label: 'Em aprovação' },
   { value: 'APROVADO',               label: 'Aprovado' },
   { value: 'REJEITADO',              label: 'Rejeitado' },
   { value: 'CANCELADO',              label: 'Cancelado' },

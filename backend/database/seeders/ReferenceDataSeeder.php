@@ -42,6 +42,7 @@ class ReferenceDataSeeder extends Seeder
             ['nome' => 'Motivos Académicos',                'ativo' => 1],
             ['nome' => 'Compensação de Entrada Tardia',     'ativo' => 1],
             ['nome' => 'Compensação de Saída Antecipada',   'ativo' => 1],
+            ['nome' => 'Outros',                            'ativo' => 1],
         ]);
     }
 }

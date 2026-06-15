@@ -18,6 +18,7 @@ enum TipoPedidoEnum: string
     case MOTIVOS_ACADEMICOS      = 'motivos_academicos';
     case COMP_ENTRADA_TARDIA     = 'comp_entrada_tardia';
     case COMP_SAIDA_ANTECIPADA   = 'comp_saida_antecipada';
+    case OUTROS                  = 'outros';
 
     public function label(): string
     {
@@ -36,6 +37,7 @@ enum TipoPedidoEnum: string
             self::MOTIVOS_ACADEMICOS      => 'Motivos Académicos',
             self::COMP_ENTRADA_TARDIA     => 'Compensação de Entrada Tardia',
             self::COMP_SAIDA_ANTECIPADA   => 'Compensação de Saída Antecipada',
+            self::OUTROS                  => 'Outros',
         };
     }
 

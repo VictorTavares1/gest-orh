@@ -125,6 +125,18 @@
                   </mat-form-field>
                 }
 
+                <!-- Campo textarea (texto livre longo) -->
+                @if (isTextarea(campo)) {
+                  <mat-form-field appearance="outline" class="span-full">
+                    <mat-label>{{ campo.label }}</mat-label>
+                    <textarea matInput rows="6" [formControlName]="campo.key" maxlength="2000"></textarea>
+                    <mat-hint align="end">{{ getControl(campo.key)?.value?.length || 0 }} / 2000</mat-hint>
+                    @if (getControl(campo.key)?.invalid && getControl(campo.key)?.touched) {
+                      <mat-error>Campo obrigatório</mat-error>
+                    }
+                  </mat-form-field>
+                }
+
                 <!-- Select período -->
                 @if (isSelectPeriodo(campo)) {
                   <mat-form-field appearance="outline">

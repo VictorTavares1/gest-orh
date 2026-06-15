@@ -47,19 +47,6 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Pendentes de aprovação colega -->
-      <mat-card class="stat-card" [class.stat-alert]="d.pendentes_minha_aprovacao > 0">
-        <mat-card-content>
-          <div class="stat-icon">
-            <mat-icon>pending_actions</mat-icon>
-          </div>
-          <div class="stat-info">
-            <span class="stat-value">{{ d.pendentes_minha_aprovacao }}</span>
-            <span class="stat-label">Aguardam a minha aprovação</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
       <!-- Aprovados -->
       <mat-card class="stat-card stat-success">
         <mat-card-content>
@@ -86,6 +73,19 @@
                  (d.meus_pedidos.por_estado['EM_APROVACAO_EXECUTIVA'] || 0) }}
             </span>
             <span class="stat-label">Em análise</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Rejeitados -->
+      <mat-card class="stat-card stat-danger">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ d.meus_pedidos.por_estado['REJEITADO'] || 0 }}</span>
+            <span class="stat-label">Rejeitados</span>
           </div>
         </mat-card-content>
       </mat-card>

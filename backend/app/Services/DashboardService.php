@@ -33,7 +33,6 @@ class DashboardService
                 'total'      => array_sum($porEstado),
                 'por_estado' => $porEstado,
             ],
-            'pendentes_minha_aprovacao' => $this->contarPendentesColega($user),
             'recentes'    => $this->recentes(
                 fn ($q) => $q->where('p.id_utilizador', $user->id_utilizador)
             ),
@@ -67,9 +66,10 @@ class DashboardService
     private function resumoExecutiva(Utilizador $user): array
     {
         $porEstado = $this->porEstado(fn ($q) => $q);
+        $tipo = $user->hasRole('substituta') ? 'substituta' : 'diretora_executiva';
 
         return [
-            'tipo'   => 'diretora_executiva',
+            'tipo'   => $tipo,
             'global' => [
                 'total'      => array_sum($porEstado),
                 'por_estado' => $porEstado,

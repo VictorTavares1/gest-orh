@@ -81,6 +81,8 @@
   &.stat-warning .stat-icon  { background: #fffbeb; color: #d97706; }
   &.stat-alert   .stat-icon  { background: #fef2f2; color: #dc2626; }
   &.stat-alert               { border-color: #fca5a5; }
+  &.stat-danger  .stat-icon  { background: #fef2f2; color: #dc2626; }
+  &.stat-danger              { border-color: #fca5a5; }
 }
 
 .stat-icon {

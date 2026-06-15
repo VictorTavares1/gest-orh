@@ -65,16 +65,16 @@ export class DashboardComponent implements OnInit {
 
   get asExecutiva(): DashboardExecutiva | null {
     const d = this.data();
-    return d?.tipo === 'diretora_executiva' ? d : null;
+    return (d?.tipo === 'diretora_executiva' || d?.tipo === 'substituta') ? d as DashboardExecutiva : null;
   }
 
   estadoLabel(estado: string): string {
     const map: Record<string, string> = {
       RASCUNHO: 'Rascunho',
-      PENDENTE: 'Pendente',
-      EM_APROVACAO_COLEGA: 'Em aprovação (colega)',
-      EM_APROVACAO_DIRETOR: 'Em aprovação (diretor)',
-      EM_APROVACAO_EXECUTIVA: 'Em aprovação (executiva)',
+      PENDENTE: 'Em aprovação',
+      EM_APROVACAO_COLEGA: 'Em aprovação',
+      EM_APROVACAO_DIRETOR: 'Em aprovação',
+      EM_APROVACAO_EXECUTIVA: 'Em aprovação',
       APROVADO: 'Aprovado',
       REJEITADO: 'Rejeitado',
       CANCELADO: 'Cancelado',

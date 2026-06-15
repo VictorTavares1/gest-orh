@@ -126,6 +126,11 @@ class Pedido extends Model
         return $this->hasOne(PedidoCompSaidaAntecipada::class, 'id_pedido', 'id_pedido');
     }
 
+    public function outros(): HasOne
+    {
+        return $this->hasOne(PedidoOutros::class, 'id_pedido', 'id_pedido');
+    }
+
     public static function mapeamentoEspecializacao(): array
     {
         return [
@@ -143,6 +148,7 @@ class Pedido extends Model
             'Motivos Académicos'              => 'motivosAcademicos',
             'Compensação de Entrada Tardia'   => 'compEntradaTardia',
             'Compensação de Saída Antecipada' => 'compSaidaAntecipada',
+            'Outros'                          => 'outros',
         ];
     }
 

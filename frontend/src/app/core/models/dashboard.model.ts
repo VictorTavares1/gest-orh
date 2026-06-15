@@ -20,7 +20,6 @@ export interface PorEstado {
 export interface DashboardFuncionario {
   tipo: 'funcionario';
   meus_pedidos: { total: number; por_estado: PorEstado };
-  pendentes_minha_aprovacao: number;
   recentes: PedidoRecente[];
 }
 
@@ -33,7 +32,7 @@ export interface DashboardDiretor {
 }
 
 export interface DashboardExecutiva {
-  tipo: 'diretora_executiva';
+  tipo: 'diretora_executiva' | 'substituta';
   global: { total: number; por_estado: PorEstado; por_tipo: Record<string, number> };
   aguardam_aprovacao: number;
   recentes: PedidoRecente[];

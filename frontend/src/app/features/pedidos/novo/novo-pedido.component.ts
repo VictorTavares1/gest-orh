@@ -20,7 +20,7 @@ import { ReferenciaService, TipoPedido, Periodo, Utilizador, Setor } from '../..
 
 // ─── Definição dos campos por tipo ─────────────────────────────────────────
 
-type FieldType = 'date' | 'time' | 'text' | 'number' | 'select-periodo' | 'select-colega' | 'select-setor';
+type FieldType = 'date' | 'time' | 'text' | 'textarea' | 'number' | 'select-periodo' | 'select-colega' | 'select-setor';
 
 interface CampoConfig {
   key: string;
@@ -109,6 +109,9 @@ const CAMPOS_POR_TIPO: Record<string, CampoConfig[]> = {
     { key: 'data_horas_extras',     label: 'Data das Horas Extras',    type: 'date',   required: true },
     { key: 'motivo',                label: 'Motivo',                    type: 'text',   required: true },
   ],
+  'outros': [
+    { key: 'descricao', label: 'Descrição', type: 'textarea', required: true },
+  ],
 };
 
 // Ícones por tipo
@@ -127,6 +130,7 @@ const ICONE_POR_TIPO: Record<string, string> = {
   'motivos-academicos':      'menu_book',
   'comp-entrada-tardia':     'login',
   'comp-saida-antecipada':   'logout',
+  'outros':                  'description',
 };
 
 @Component({
@@ -220,6 +224,7 @@ export class NovoPedidoComponent implements OnInit {
   isNumber(campo: CampoConfig): boolean { return campo.type === 'number'; }
   isText(campo: CampoConfig): boolean { return campo.type === 'text'; }
   isSelectPeriodo(campo: CampoConfig): boolean { return campo.type === 'select-periodo'; }
+  isTextarea(campo: CampoConfig): boolean { return campo.type === 'textarea'; }
   isSelectColega(campo: CampoConfig): boolean { return campo.type === 'select-colega'; }
   isSelectSetor(campo: CampoConfig): boolean { return campo.type === 'select-setor'; }
 

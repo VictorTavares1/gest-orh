@@ -91,6 +91,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
             Route::post('/motivos-academicos', [\App\Http\Controllers\API\V1\Pedidos\MotivosAcademicosController::class, 'store'])->name('motivos-academicos.store');
             Route::post('/comp-entrada-tardia', [\App\Http\Controllers\API\V1\Pedidos\CompEntradaTardiaController::class, 'store'])->name('comp-entrada-tardia.store');
             Route::post('/comp-saida-antecipada', [\App\Http\Controllers\API\V1\Pedidos\CompSaidaAntecipadaController::class, 'store'])->name('comp-saida-antecipada.store');
+            Route::post('/outros', [\App\Http\Controllers\API\V1\Pedidos\OutrosController::class, 'store'])->name('outros.store');
         });
 
         Route::delete('/anexos/{anexo}', [\App\Http\Controllers\API\V1\AnexoController::class, 'destroy'])->name('anexos.destroy');
