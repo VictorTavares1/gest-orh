@@ -124,7 +124,7 @@ export class ListaPedidosComponent implements OnInit {
     this.pedidoService.listar({ estado: estado || undefined, per_page: 200 }).subscribe({
       next: (res) => {
         const meus = this.isDiretor()
-          ? res.data.filter(p => p.utilizador?.id === meuId)
+          ? res.data.filter(p => p.utilizador?.id_utilizador === meuId)
           : res.data;
         this.pedidosMeus.set(meus);
         this.totalMeus.set(meus.length);

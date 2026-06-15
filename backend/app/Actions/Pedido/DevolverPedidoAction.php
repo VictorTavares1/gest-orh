@@ -20,7 +20,7 @@ class DevolverPedidoAction
             throw WorkflowException::transicaoInvalida($estadoAtual, EstadoPedidoEnum::RASCUNHO);
         }
 
-        $resultado = $this->transicionar($user, $pedido, EstadoPedidoEnum::RASCUNHO);
+        $resultado = $this->transicionar($user, $pedido, EstadoPedidoEnum::RASCUNHO, $comentario);
 
         $resultado->loadMissing('utilizador');
         $resultado->utilizador?->notify(new PedidoAtualizadoNotification($resultado, 'devolvido'));
@@ -28,7 +28,7 @@ class DevolverPedidoAction
         return $resultado;
     }
 
-    private function transicionar(Utilizador $user, Pedido $pedido, EstadoPedidoEnum $destino): Pedido
+    private function transicionar(Utilizador $user, Pedido $pedido, EstadoPedidoEnum $destino, ?string $comentario = null): Pedido
     {
         $estadoDestino = EstadoPedido::where('nome', $destino->value)->firstOrFail();
 
@@ -38,6 +38,7 @@ class DevolverPedidoAction
             'id_estado_anterior' => $pedido->id_estado_pedido,
             'id_estado_novo'     => $estadoDestino->id_estado_pedido,
             'data_alteracao'     => now(),
+            'comentario'         => $comentario,
         ]);
 
         $pedido->update(['id_estado_pedido' => $estadoDestino->id_estado_pedido]);

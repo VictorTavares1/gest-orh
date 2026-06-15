@@ -36,6 +36,8 @@
           <button mat-stroked-button color="warn" (click)="rejeitar()" [disabled]="acaoLoading()">
             <mat-icon>cancel</mat-icon>Rejeitar
           </button>
+        }
+        @if (podeDevolver()) {
           <button mat-stroked-button (click)="devolver()" [disabled]="acaoLoading()" class="btn-devolver">
             <mat-icon>undo</mat-icon>Devolver
           </button>
@@ -195,6 +197,12 @@
                         &middot;
                         {{ item.data_alteracao | date:'dd/MM/yyyy HH:mm' }}
                       </span>
+                      @if (item.comentario) {
+                        <span class="timeline-comentario">
+                          <mat-icon class="comentario-icon">comment</mat-icon>
+                          {{ item.comentario }}
+                        </span>
+                      }
                     </div>
                   </div>
                 }

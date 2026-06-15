@@ -30,7 +30,7 @@
         <span matListItemTitle>Novo Pedido</span>
       </mat-list-item>
 
-      @if (isDiretora() || isSubstituta() || isDiretor()) {
+      @if (isDiretora() || isSubstituta()) {
         <mat-list-item routerLink="/aprovacoes" routerLinkActive="active-link" (click)="isMobile() && sidenavOpen.set(false)">
           <mat-icon matListItemIcon
             [matBadge]="pendentesCount() > 0 ? pendentesCount() : null"

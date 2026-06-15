@@ -32,7 +32,6 @@ export class ShellComponent implements OnInit {
   readonly sidenavOpen = signal(window.innerWidth >= 768);
   readonly isDiretora = this.auth.hasRole('diretora_executiva');
   readonly isSubstituta = this.auth.hasRole('substituta');
-  readonly isDiretor = this.auth.hasRole('diretor_tecnico');
   readonly pendentesCount = signal(0);
 
   @HostListener('window:resize')
@@ -48,13 +47,9 @@ export class ShellComponent implements OnInit {
   }
 
   private carregarPendentes(): void {
-    if (!this.isDiretora() && !this.isSubstituta() && !this.isDiretor()) return;
+    if (!this.isDiretora() && !this.isSubstituta()) return;
 
-    const estado = this.isDiretora() || this.isSubstituta()
-      ? 'EM_APROVACAO_EXECUTIVA'
-      : 'EM_APROVACAO_COLEGA';
-
-    this.pedidoService.listar({ estado, per_page: 1 }).subscribe({
+    this.pedidoService.listar({ estado: 'EM_APROVACAO_EXECUTIVA', per_page: 1 }).subscribe({
       next: (res) => this.pendentesCount.set(res.meta.total),
     });
   }

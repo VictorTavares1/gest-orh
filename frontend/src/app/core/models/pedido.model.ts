@@ -22,6 +22,7 @@ export interface HistoricoItem {
   utilizador_acao: PedidoUtilizador | null;
   estado_anterior: PedidoEstado | null;
   estado_novo: PedidoEstado;
+  comentario: string | null;
 }
 
 export interface Pedido {

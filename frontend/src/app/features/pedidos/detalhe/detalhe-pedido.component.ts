@@ -84,6 +84,8 @@ export class DetalhePedidoComponent implements OnInit {
   private dialog = inject(MatDialog);
 
   readonly isDiretora = this.auth.hasRole('diretora_executiva');
+  readonly isSubstituta = this.auth.hasRole('substituta');
+  readonly utilizadorAtual = this.auth.utilizador;
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -262,7 +264,20 @@ export class DetalhePedidoComponent implements OnInit {
   }
 
   podeAprovar(): boolean {
-    return this.isDiretora() && this.pedido()?.estado?.nome === 'EM_APROVACAO_EXECUTIVA';
+    const estado = this.pedido()?.estado?.nome;
+    if ((this.isDiretora() || this.isSubstituta()) && estado === 'EM_APROVACAO_EXECUTIVA') return true;
+    // Colega nomeado na troca de horário
+    if (estado === 'EM_APROVACAO_COLEGA') {
+      const idColega = this.pedido()?.especializacao?.['id_colega'];
+      const idAtual = this.utilizadorAtual()?.id_utilizador;
+      return idColega != null && idAtual != null && Number(idColega) === Number(idAtual);
+    }
+    return false;
+  }
+
+  podeDevolver(): boolean {
+    const estado = this.pedido()?.estado?.nome;
+    return (this.isDiretora() || this.isSubstituta()) && estado === 'EM_APROVACAO_EXECUTIVA';
   }
 
   aprovar(): void {

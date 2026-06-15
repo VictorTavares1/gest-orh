@@ -48,7 +48,7 @@ export const routes: Routes = [
       },
       {
         path: 'aprovacoes',
-        canActivate: [roleGuard('diretora_executiva', 'substituta', 'diretor_tecnico')],
+        canActivate: [roleGuard('diretora_executiva', 'substituta')],
         loadComponent: () =>
           import('./features/aprovacoes/aprovacoes.component').then((m) => m.AprovacoesComponent),
       },

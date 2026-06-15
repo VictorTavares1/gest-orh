@@ -17,6 +17,7 @@ class HistoricoPedido extends Model
         'id_estado_anterior',
         'id_estado_novo',
         'data_alteracao',
+        'comentario',
     ];
 
     protected $casts = [

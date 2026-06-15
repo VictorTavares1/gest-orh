@@ -25,6 +25,7 @@ class HistoricoResource extends JsonResource
                 'nome'  => $this->estadoNovo->nome->value,
                 'label' => $this->estadoNovo->nome->label(),
             ]),
+            'comentario'      => $this->comentario,
         ];
     }
 }

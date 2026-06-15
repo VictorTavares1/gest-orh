@@ -36,10 +36,10 @@ enum EstadoPedidoEnum: string
     {
         return match($this) {
             self::RASCUNHO               => [self::PENDENTE, self::CANCELADO],
-            self::PENDENTE               => [self::EM_APROVACAO_COLEGA, self::EM_APROVACAO_EXECUTIVA, self::CANCELADO, self::REJEITADO],
+            self::PENDENTE               => [self::EM_APROVACAO_COLEGA, self::EM_APROVACAO_EXECUTIVA],
             self::EM_APROVACAO_COLEGA    => [self::EM_APROVACAO_EXECUTIVA, self::REJEITADO, self::CANCELADO],
             self::EM_APROVACAO_DIRETOR   => [self::EM_APROVACAO_EXECUTIVA, self::APROVADO, self::REJEITADO, self::CANCELADO],
-            self::EM_APROVACAO_EXECUTIVA => [self::APROVADO, self::REJEITADO, self::CANCELADO, self::RASCUNHO],
+            self::EM_APROVACAO_EXECUTIVA => [self::APROVADO, self::REJEITADO, self::RASCUNHO, self::CANCELADO],
             default                      => [],
         };
     }
